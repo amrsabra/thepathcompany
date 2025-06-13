@@ -1,7 +1,10 @@
+@use 'sass:color';
+@use 'sass:map';
+@use './variables.scss' as *;
 @import './main.scss';
 
 .membership-benefits {
-  padding: $spacing-4xl 0;
+  padding: 4rem 0;
   padding-bottom: $spacing-2xl;
   background: $background-dark;
   position: relative;

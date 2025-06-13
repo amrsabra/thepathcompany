@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use 'sass:map';
+@use './variables.scss' as *;
 @import './main.scss';
 
 .contact-us {

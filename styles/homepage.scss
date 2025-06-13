@@ -1,4 +1,7 @@
 @import './main.scss';
+@use 'sass:color';
+@use 'sass:map';
+@use './variables.scss' as *;
 
 // Variables
 $hero-title-size: 4.5rem;
@@ -6,7 +9,7 @@ $hero-subtitle-size: 1.5rem;
 $section-title-size: 3rem;
 $cta-button-radius: 50px;
 $hover-transform: translateY(-2px);
-$hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
+$hover-shadow: 0 10px 20px color.adjust($background-dark, $alpha: -0.8);
 $card-hover-transform: translateY(-5px);
 $particle-size: 40px;
 $particle-color: rgba($light-text, 0.1);
