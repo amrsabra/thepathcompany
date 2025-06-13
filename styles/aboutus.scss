@@ -1,7 +1,7 @@
-@import './main.scss';
 @use 'sass:color';
 @use 'sass:map';
 @use './variables.scss' as *;
+@use './main.scss' as *;
 
 .about-page {
   min-height: 100vh;
