@@ -230,20 +230,22 @@
 // Responsive Enhancements
 @media (max-width: 600px) {
   .waitlist-page {
-    padding: 0.2rem;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
+    padding-top: 1.2rem;
+    padding-bottom: 1.2rem;
   }
   .content-card {
-    padding-top: 0.7rem !important;
-    padding-bottom: 0.7rem !important;
-    max-width: 100vw !important;
-    border-radius: 0.5rem !important;
-    min-width: 0;
+    padding-top: 1.2rem !important;
+    padding-bottom: 1.2rem !important;
+  }
+  .waitlist-form {
+    margin-bottom: 1.1rem !important;
+  }
+  .waitlist-count {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1.2rem !important;
+  }
+  .countdown-section {
+    margin-top: 1.2rem !important;
   }
   .background-stars img {
     height: 28px !important;
@@ -277,13 +279,6 @@
   .waitlist-form .submit-button {
     font-size: 0.9rem !important;
     padding: 0.4rem 0.7rem !important;
-  }
-  .waitlist-count {
-    font-size: 0.7rem !important;
-    margin-top: 0.2rem !important;
-  }
-  .countdown-section {
-    margin-top: 0.5rem !important;
   }
   .countdown-section h3 {
     font-size: 0.9rem !important;
