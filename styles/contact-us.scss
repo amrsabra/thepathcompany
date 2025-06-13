@@ -1,7 +1,4 @@
-@use 'sass:color';
-@use 'sass:map';
-@use './variables.scss' as *;
-@use './main.scss' as *;
+@import './main.scss';
 
 .contact-us {
   min-height: 100vh;

@@ -1,12 +1,12 @@
 // Colors
-$background-dark: #0f0f0f !default;
-$background-light: #1A1A24 !default;
-$light-text: #F3F3F3 !default;
-$light-text-secondary: rgba(255, 255, 255, 0.6) !default;
-$primary-accent: #872B97 !default;
-$main-cta: #FF3C68 !default;
-$secondary-cta: #FF3C68 !default;
-$border-color: rgba(255, 255, 255, 0.1) !default;
+$background-dark: #171721;
+$background-light: #1A1A24;
+$light-text: #F3F3F3;
+$light-text-secondary: rgba(255, 255, 255, 0.6);
+$primary-accent: #872B97;
+$main-cta: #FF3C68;
+$secondary-cta: #FF7130;
+$border-color: rgba(255, 255, 255, 0.1);
 
 // Gradients
 $gradient-primary: linear-gradient(135deg, $primary-accent, $main-cta, $secondary-cta);
@@ -28,14 +28,14 @@ $font-weight-bold: 600;
 $font-weight-extrabold: 800;
 
 // Spacing
-$spacing-xs: 0.5rem !default;
-$spacing-sm: 1rem !default;
-$spacing-md: 1.5rem !default;
-$spacing-lg: 2rem !default;
-$spacing-xl: 3rem !default;
-$spacing-2xl: 4rem !default;
-$spacing-3xl: 5rem !default;
-$spacing-4xl: 6rem !default;
+$spacing-xs: 0.5rem;
+$spacing-sm: 0.75rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
+$spacing-4xl: 6rem;
 $spacing-5xl: 8rem;
 
 // Border Radius
@@ -93,4 +93,4 @@ $breakpoints: (
   'lg': 1024px,
   'xl': 1280px,
   '2xl': 1536px
-) !default; 
+); 

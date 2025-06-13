@@ -1,7 +1,4 @@
-@use 'sass:color';
-@use 'sass:map';
-@use './variables.scss' as *;
-@use './main.scss' as *;
+@import './main.scss';
 
 // Variables
 $card-hover-bg: rgba(0, 0, 0, 0.85);
@@ -20,7 +17,7 @@ $card-border-radius: 1rem;
 $filter-border-radius: 2rem;
 $filter-padding: 0.5rem 1.5rem;
 $hover-transform: translateY(-2px);
-$hover-shadow: 0 10px 20px color.adjust($background-dark, $alpha: -0.8);
+$hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
 
 .course-slider {
   padding: $spacing-3xl 0;
