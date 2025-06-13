@@ -5,8 +5,8 @@ import { Rocket } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
-import '../../styles/waitlist.scss';
-import { supabase } from '../../supabaseClient';
+import '../styles/waitlist.scss';
+import { supabase } from '../supabaseClient';
 
 const calculateTimeLeft = () => {
   const launchDate = new Date('2025-09-01T00:00:00'); // September 1st, 2025
