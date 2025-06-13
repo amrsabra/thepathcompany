@@ -1,4 +1,4 @@
-@use './main.scss' as *;
+@import './main.scss';
 
 .waitlist-page {
   min-height: 100vh;
@@ -29,6 +29,24 @@
     text-align: center;
   }
 
+  .background-stars {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+  
+    img {
+      height: 64px; // Same as h-16
+      width: auto;
+      opacity: 1;
+      z-index: 1;
+    }
+  }
+  
   .waitlist-header {
     margin-bottom: 1.5rem;
 
@@ -52,6 +70,13 @@
     }
   }
 
+  .waitlist-count {
+    font-size: 0.8125rem; // smaller than default
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.5rem;
+  }
+
   .waitlist-form {
     margin-top: 0.5rem;
     display: flex;
@@ -71,49 +96,65 @@
     input,
     textarea {
       width: 100%;
-      padding: 0.5rem 0.75rem; /* px-2 py-1.5 */
-      border: 1px solid rgba(#ffffff, 0.2); /* border-gray-600 */
-      background: rgba(#16213e, 0.7); /* bg-gray-800 */
+      padding: 0.75rem 1rem;
+      background: rgba(18, 27, 45, 0.85); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
       color: #ffffff;
-      border-radius: 0.5rem; /* rounded-md */
-      font-size: 1rem; /* sm:text-base */
-
+      border-radius: 0.5rem;
+      font-family: var(--font-inter), 'Inter', sans-serif;
+      font-weight: 400; // this is key
+      font-size: 1.05rem; // or 1rem if you prefer tighter
+      transition: all 0.3s ease;
+    
       &::placeholder {
-        color: rgba(#ffffff, 0.5); /* placeholder-gray-400 */
+        color: rgba(255, 255, 255, 0.6);
       }
-
+    
       &:focus {
         outline: none;
-        border-color: #6366f1; /* focus:border-indigo-500 */
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5); /* focus:ring-indigo-500 */
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
       }
     }
-
+    
     textarea {
       resize: vertical;
     }
 
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+    
+
     .submit-button {
-      padding: 0.5rem 1.5rem; /* py-2 px-3 */
-      background: linear-gradient(135deg, #872B97, #FF3C68); /* bg-indigo-600 */
+      padding: 0.75rem 2rem; // wider & taller
+      background: linear-gradient(135deg, #872B97, #FF3C68);
       color: #ffffff;
       border: none;
-      border-radius: 0.5rem; /* rounded-md */
-      font-size: 1.125rem; /* text-lg */
-      font-weight: 600;
+      border-radius: 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 600; // ⬅️ NOT bold (was 600 before)
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(135, 43, 151, 0.3);
-
+      box-shadow: 0 6px 24px rgba(135, 43, 151, 0.4); // more glow
+    
       &:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 20px rgba(135, 43, 151, 0.4);
+        transform: scale(1.03); // stronger pop
+        box-shadow: 0 8px 28px rgba(255, 60, 104, 0.45); // more shine
       }
-
+    
       &:active {
-        transform: scale(0.98);
+        transform: scale(0.97);
       }
-    }
+    }    
   }
 
   .thank-you-message {

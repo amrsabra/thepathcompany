@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Rocket } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 import { motion } from 'framer-motion';
@@ -35,7 +36,7 @@ export default function WaitlistPage() {
     featureSuggestions: '',
   });
   const [submitted, setSubmitted] = useState(false);
-  const [waitlistCount, setWaitlistCount] = useState(100);
+  const [waitlistCount, setWaitlistCount] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,7 +51,7 @@ export default function WaitlistPage() {
       const { count } = await supabase
         .from('waitlist')
         .select('*', { count: 'exact', head: true });
-      setWaitlistCount(100 + (count || 0));
+        setWaitlistCount((count || 0) + 32);
     };
     fetchCount();
     const interval = setInterval(fetchCount, 5000);
@@ -64,7 +65,26 @@ export default function WaitlistPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Insert data into Supabase
+  
+    // 1. Check if email already exists in the waitlist table
+    const { data: existingUsers, error: fetchError } = await supabase
+      .from('waitlist')
+      .select('email')
+      .eq('email', formData.email)
+      .limit(1);
+  
+    if (fetchError) {
+      alert('There was an error checking your email. Please try again.');
+      console.error(fetchError);
+      return;
+    }
+  
+    if (existingUsers.length > 0) {
+      alert('This email is already registered on the waitlist.');
+      return;
+    }
+  
+    // 2. Insert new user if email doesn't exist
     const { error } = await supabase.from('waitlist').insert([
       {
         first_name: formData.firstName,
@@ -73,14 +93,23 @@ export default function WaitlistPage() {
         suggestion: formData.featureSuggestions,
       }
     ]);
+  
     if (error) {
       alert('There was an error joining the waitlist. Please try again.');
-      console.log(error);
+      console.error(error);
       return;
     }
+  
     setSubmitted(true);
+  
+    // 3. Fetch updated user count
+    const { count } = await supabase
+      .from('waitlist')
+      .select('*', { count: 'exact', head: true });
+  
+    setWaitlistCount(count || 0);
   };
-
+  
   const timerComponents = [];
 
   Object.keys(timeLeft).forEach((interval) => {
@@ -96,7 +125,7 @@ export default function WaitlistPage() {
   });
 
   return (
-    <div className="waitlist-page">
+    <div className="waitlist-page" style={{ fontFamily: `'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif` }}>
       {/* Background decoration */}
       <div className="background-stars">
         <img 
@@ -199,7 +228,7 @@ export default function WaitlistPage() {
                 Join the Elite Waitlist
               </motion.button>
               <div className="waitlist-count mt-2 text-xs text-gray-400">
-                {waitlistCount} users have joined the waitlist!
+              {waitlistCount} users have joined the waitlist!
               </div>
             </div>
           </form>
