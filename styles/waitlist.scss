@@ -234,13 +234,19 @@
     padding-bottom: 1.2rem;
   }
   .content-card {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    min-width: 0;
     padding-top: 1.2rem !important;
     padding-bottom: 1.2rem !important;
   }
   .waitlist-form {
+    width: 95vw !important;
+    max-width: 95vw !important;
     margin-bottom: 1.1rem !important;
   }
   .waitlist-count {
+    font-size: 0.6rem !important;
     margin-top: 0.5rem !important;
     margin-bottom: 1.2rem !important;
   }
@@ -273,12 +279,18 @@
   }
   .waitlist-form input,
   .waitlist-form textarea {
-    font-size: 0.8rem !important;
-    padding: 0.4rem 0.5rem !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    font-size: 1rem !important;
+    padding: 0.6rem 0.7rem !important;
   }
   .waitlist-form .submit-button {
-    font-size: 0.9rem !important;
-    padding: 0.4rem 0.7rem !important;
+    width: 100% !important;
+    font-size: 1.1rem !important;
+    padding: 0.7rem 0 !important;
+    min-width: 0 !important;
+    display: block;
+    margin: 0 auto;
   }
   .countdown-section h3 {
     font-size: 0.9rem !important;
@@ -292,12 +304,11 @@
     gap: 0.2rem !important;
   }
   .countdown-section .countdown-item {
-    min-width: 48px !important;
-    font-size: 0.9rem !important;
-    padding: 0.3rem 0.2rem !important;
-    margin: 0.1rem 0.1rem !important;
+    font-size: 1.5rem !important;
+    min-width: 60px !important;
+    padding: 0.5rem 0.3rem !important;
   }
   .countdown-section .countdown-item span {
-    font-size: 0.6rem !important;
+    font-size: 0.7rem !important;
   }
 } 
