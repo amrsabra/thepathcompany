@@ -1,0 +1,285 @@
+@import './_variables.scss'; // Import only variables
+
+.footer {
+  background-color: darken($background-dark, 3%);
+  padding: $spacing-3xl 0 $spacing-xl;
+  border-top: 1px solid rgba($light-text, 0.05);
+  color: $light-text-secondary;
+  
+  /* Modern Grid Layout */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-2xl;
+    margin-bottom: $spacing-3xl;
+  }
+
+  /* Branding Section */
+  &__brand {
+    grid-column: span 1;
+  }
+
+  &__logo {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    margin-bottom: $spacing-lg;
+    
+    .gradient-text {
+      background-size: 200% auto;
+      animation: gradientTextShift 8s ease infinite;
+    }
+  }
+
+  &__slogan {
+    font-size: $font-size-sm;
+    line-height: 1.6;
+    margin-bottom: $spacing-lg;
+    max-width: 280px;
+  }
+  
+  /* Separator line */
+  &__separator {
+    width: 100%;
+    height: 1px;
+    background-color: rgba($light-text, 0.1);
+    margin: $spacing-lg 0;
+  }
+
+  /* Connect Section */
+  &__connect {
+    margin-top: $spacing-lg;
+    
+    .footer__heading {
+      margin-bottom: $spacing-sm;
+      font-size: $font-size-sm;
+      
+      &:after {
+        width: 25px;
+        bottom: -6px;
+      }
+    }
+  }
+
+  /* Social Icons */
+  &__social {
+    display: flex;
+    gap: $spacing-md;
+  }
+
+  &__social-icon {
+    font-size: $font-size-lg;
+    color: $light-text-secondary;
+    transition: $transition-base;
+
+    &:hover {
+      color: $light-text;
+      transform: translateY(-3px);
+    }
+  }
+
+  /* Links Sections */
+  &__links {
+    grid-column: span 1;
+  }
+
+  &__heading {
+    font-size: $font-size-md;
+    color: $light-text;
+    font-weight: $font-weight-medium;
+    margin-bottom: $spacing-lg;
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      height: 2px;
+      width: 30px;
+      background: $primary-accent;
+    }
+  }
+
+  &__links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: $spacing-md;
+    }
+
+    a {
+      color: $light-text-secondary;
+      text-decoration: none;
+      font-size: $font-size-sm;
+      transition: $transition-base;
+      position: relative;
+      padding-left: 0;
+
+      &:before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background-color: $light-text;
+        transition: width 0.3s ease;
+      }
+
+      &:hover {
+        color: $light-text;
+        
+        &:before {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  /* CTA Section */
+  &__cta {
+    grid-column: span 1;
+  }
+
+  &__cta-card {
+    background: rgba($background-light, 0.5);
+    border: 1px solid rgba($light-text, 0.1);
+    border-radius: $border-radius-lg;
+    padding: $spacing-xl;
+    margin-bottom: $spacing-xl;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__cta-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__cta-title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $light-text;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+  }
+
+  &__cta-text {
+    font-size: $font-size-sm;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    color: $light-text-secondary;
+  }
+
+  &__cta-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__cta-button {
+    display: inline-block;
+    background: $primary-accent;
+    color: $light-text;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    padding: $spacing-md $spacing-2xl;
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    transition: $transition-base;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+
+    &:hover {
+      background: lighten($primary-accent, 5%);
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Download Section */
+  &__app-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__app-button {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    background: rgba($background-light, 0.5);
+    border: 1px solid rgba($light-text, 0.1);
+    border-radius: $border-radius-md;
+    padding: $spacing-sm $spacing-md;
+    color: $light-text;
+    text-decoration: none;
+    font-size: $font-size-sm;
+    transition: $transition-base;
+
+    &:hover {
+      background: rgba($background-light, 0.8);
+      border-color: rgba($light-text, 0.2);
+    }
+
+    svg {
+      font-size: 1.2em;
+    }
+  }
+
+  /* Bottom Section */
+  &__divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba($light-text, 0.05), transparent);
+    margin-bottom: $spacing-xl;
+  }
+
+  &__copyright {
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $light-text-secondary;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: map-get($breakpoints, 'lg')) {
+    &__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &__brand, &__cta {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: map-get($breakpoints, 'md')) {
+    padding: $spacing-2xl 0 $spacing-lg;
+
+    &__grid {
+      gap: $spacing-xl;
+    }
+  }
+
+  @media (max-width: map-get($breakpoints, 'sm')) {
+    &__grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__brand, &__links, &__cta {
+      grid-column: span 1;
+    }
+
+    &__app-buttons {
+      flex-direction: row;
+    }
+  }
+}
+
+@keyframes gradientTextShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+} 

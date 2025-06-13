@@ -1,0 +1,350 @@
+@import './main.scss';
+
+// Variables
+$card-hover-bg: rgba(0, 0, 0, 0.85);
+$card-overlay-gradient: linear-gradient(
+  180deg,
+  transparent 0%,
+  rgba(0, 0, 0, 0.2) 50%,
+  rgba(0, 0, 0, 0.8) 100%
+);
+$button-hover-bg: rgba(255, 255, 255, 0.2);
+$card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+$control-size: 40px;
+$card-gap: 2rem;
+$card-padding: 1.5rem;
+$card-border-radius: 1rem;
+$filter-border-radius: 2rem;
+$filter-padding: 0.5rem 1.5rem;
+$hover-transform: translateY(-2px);
+$hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
+
+.course-slider {
+  padding: $spacing-3xl 0;
+  padding-top: $spacing-2xl;
+  background-color: $background-dark;
+  position: relative;
+
+  // Creative Separator: Subtle dots (Adjusted Spacing)
+  &::before {
+    content: '';
+    position: absolute;
+    top: $spacing-xs;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    max-width: 300px;
+    height: 4px;
+    background-image: radial-gradient($primary-accent 1.5px, transparent 1.5px);
+    background-size: 10px 4px;
+    background-repeat: repeat-x;
+    background-position: center;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  // Adjust faint line position relative to dots
+  &::after {
+    content: '';
+    position: absolute;
+    top: calc(#{$spacing-xs} + 5px);
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: rgba($light-text, 0.05);
+    z-index: 0;
+  }
+
+  .container {
+    padding: $container-padding;
+    max-width: $container-max-width;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: $spacing-2xl;
+  }
+
+  &__title {
+    h2 {
+      font-size: $font-size-2xl;
+      margin-bottom: $spacing-sm;
+      background: linear-gradient(135deg, #872B97, #FF3C68);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    p {
+      color: $light-text;
+      opacity: 0.8;
+      font-size: $font-size-lg;
+    }
+  }
+
+  &__filters {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  &__filter {
+    padding: $button-padding;
+    border: 2px solid $primary-accent;
+    border-radius: $button-border-radius;
+    background: transparent;
+    color: $primary-accent;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+      background: rgba($primary-accent, 0.1);
+    }
+
+    &.active {
+      background: $primary-accent;
+      color: $light-text;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    gap: $spacing-md;
+  }
+
+  &__control {
+    width: 40px;
+    height: 40px;
+    border-radius: $border-radius-full;
+    border: 2px solid $primary-accent;
+    background: transparent;
+    color: $primary-accent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: $transition-base;
+
+    &:hover {
+      background: rgba($primary-accent, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__container {
+    position: relative;
+    overflow: hidden;
+    padding: $spacing-md 0;
+  }
+
+  &__row {
+    display: flex;
+    gap: $spacing-xl;
+    width: 100%;
+  }
+}
+
+.course-card {
+  flex: 0 0 calc(33.333% - 1.33rem);
+  position: relative;
+  border-radius: $card-border-radius;
+  overflow: hidden;
+  background: $background-dark;
+  box-shadow: $card-shadow;
+  transition: $transition-base;
+
+  &__thumbnail {
+    position: relative;
+    padding-top: 75%;
+    overflow: hidden;
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 60%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+  }
+
+  &__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: $card-padding;
+    color: $light-text;
+    z-index: 1;
+
+    h3 {
+      margin: 0;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      transition: transform 0.4s ease;
+    }
+
+    .course-card__instructor,
+    .course-card__duration {
+      margin: $spacing-xs 0 0;
+      font-size: $font-size-sm;
+      opacity: 0.8;
+      transition: all 0.4s ease;
+    }
+  }
+
+  &__hover {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: $card-padding;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.95) 40%,
+      rgba(0, 0, 0, 0.98) 100%
+    );
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+    z-index: 2;
+
+    .course-card__description {
+      display: none;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-md;
+    padding: 0 0.5rem;
+  }
+
+  &__play,
+  &__info {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+    letter-spacing: 0.2px;
+  }
+
+  &__play {
+    background: $primary-accent;
+    color: rgba(255, 255, 255, 0.95);
+
+    &:hover {
+      background: darken($primary-accent, 5%);
+      border-color: transparent;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__info {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.95);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &:hover {
+    .course-card__thumbnail img {
+      transform: scale(1.05);
+    }
+
+    .course-card__content {
+      h3 {
+        transform: translateY(-30px);
+      }
+
+      .course-card__instructor,
+      .course-card__duration {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    .course-card__hover {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Responsive styles
+@media (max-width: map-get($breakpoints, 'xl')) {
+  .course-card {
+    flex: 0 0 calc(50% - 1rem);
+  }
+}
+
+@media (max-width: map-get($breakpoints, 'md')) {
+  .course-slider {
+    padding: $spacing-2xl 0;
+
+    &__header {
+      flex-direction: column;
+      gap: $spacing-md;
+      align-items: flex-start;
+    }
+
+    .course-card {
+      flex: 0 0 calc(100% - 1rem);
+    }
+  }
+}
+
+@media (max-width: map-get($breakpoints, 'sm')) {
+  .course-card {
+    flex: 0 0 calc(100% - 1rem);
+  }
+} 

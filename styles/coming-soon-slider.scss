@@ -1,0 +1,396 @@
+@import './_variables.scss';
+
+.coming-soon-slider {
+  padding: $spacing-xl 0 $spacing-4xl;
+  background-color: $background-dark;
+  background-image: radial-gradient(rgba($light-text, 0.03) 1px, transparent 1px);
+  background-size: 15px 15px;
+  position: relative;
+
+  .container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: $container-padding;
+  }
+
+  &__title {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    background: linear-gradient(135deg, #872B97, #FF3C68);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: $spacing-xl;
+    display: inline-block;
+  }
+
+  &__wrapper {
+    position: relative;
+  }
+
+  &__container {
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__row {
+    display: flex;
+    gap: $spacing-lg; // Gap between the two visible cards
+  }
+
+  &__control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(darken($background-dark, 5%), 0.6);
+    color: rgba($light-text, 0.7);
+    border: 1px solid rgba($light-text, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: $transition-base;
+
+    &:hover {
+      opacity: 1;
+      background: rgba(darken($background-dark, 3%), 0.8);
+      color: $light-text;
+      border-color: rgba($light-text, 0.2);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    svg {
+      font-size: 1.6rem;
+    }
+
+    &.prev {
+      left: -$spacing-xl; // Position outside container slightly
+      @media (max-width: map-get($breakpoints, 'md')) {
+        left: -$spacing-sm;
+      }
+    }
+
+    &.next {
+      right: -$spacing-xl; // Position outside container slightly
+      @media (max-width: map-get($breakpoints, 'md')) {
+        right: -$spacing-sm;
+      }
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-xs;
+    margin-top: $spacing-lg;
+
+    .pagination-indicator {
+      width: 20px; // Adjust width for line style
+      height: 4px; // Adjust height for line style
+      background-color: rgba($light-text, 0.2);
+      border: none;
+      border-radius: 2px; // Rounded line ends
+      cursor: pointer;
+      transition: $transition-base;
+      padding: 0;
+
+      &.active {
+        background-color: $light-text;
+        width: 30px; // Make active indicator slightly longer
+      }
+
+      &:hover {
+        background-color: rgba($light-text, 0.4);
+      }
+    }
+  }
+}
+
+.coming-soon-card {
+  flex: 0 0 calc(50% - #{$spacing-lg / 2});
+  position: relative;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0, 0.1);
+  transition: all 0.3s ease-out;
+
+  &__remind-me {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .remind-me-button {
+      display: flex;
+      align-items: center;
+      gap: $spacing-xs;
+      padding: $spacing-xs $spacing-sm;
+      background: linear-gradient(135deg, rgba($primary-accent, 0.9), rgba($primary-accent, 0.7));
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba($light-text, 0.2);
+      border-radius: $border-radius-md;
+      color: $light-text;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba($primary-accent, 0.3);
+      transform: translateY(0);
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba($light-text, 0.1), transparent);
+        transform: translateX(-100%);
+        transition: transform 0.4s ease;
+      }
+
+      svg {
+        font-size: 1rem;
+        transition: transform 0.2s ease;
+        position: relative;
+        z-index: 1;
+        color: $light-text;
+      }
+
+      span {
+        position: relative;
+        z-index: 1;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, rgba($primary-accent, 1), rgba($primary-accent, 0.8));
+        border-color: rgba($light-text, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba($primary-accent, 0.4);
+
+        &::before {
+          transform: translateX(100%);
+        }
+
+        svg {
+          transform: scale(1.1) rotate(10deg);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba($primary-accent, 0.2);
+        transition: none;
+      }
+
+      &.reminded {
+        background: linear-gradient(135deg, rgba($primary-accent, 0.3), rgba($primary-accent, 0.2));
+        border-color: rgba($primary-accent, 0.4);
+        color: $primary-accent;
+        animation: none;
+        box-shadow: 0 2px 8px rgba($primary-accent, 0.2);
+
+        svg {
+          color: $primary-accent;
+          animation: none;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 8px;
+          height: 8px;
+          background: $primary-accent;
+          border-radius: 50%;
+          animation: none;
+        }
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba($primary-accent, 0.3);
+        }
+      }
+    }
+  }
+
+  &__thumbnail {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10; // Adjust aspect ratio as needed
+    object-fit: cover;
+    transition: $transition-transform;
+  }
+
+  &__date-tag {
+    position: absolute;
+    top: $spacing-md;
+    left: $spacing-md;
+    background-color: $light-text;
+    color: $background-dark;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-md;
+    font-size: 0.75rem; // Use a specific small font size
+    font-weight: $font-weight-bold;
+    z-index: 2;
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+    opacity: 0.8;
+    transition: $transition-base;
+  }
+
+  &__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: $spacing-lg;
+    z-index: 2;
+    color: $light-text;
+    transform: translateY(20px); // Initially slightly hidden
+    opacity: 0;
+    transition: $transition-base;
+  }
+
+  &__title {
+    font-size: $font-size-xl; // Large title
+    font-weight: $font-weight-extrabold;
+    margin-bottom: $spacing-xs;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  &__separator {
+    display: block;
+    width: 40px;
+    height: 3px;
+    background-color: $light-text;
+    margin-bottom: $spacing-sm;
+    opacity: 0.7;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    opacity: 0.9;
+    line-height: 1.4;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0, 0.15);
+
+    .coming-soon-card__thumbnail {
+      transform: scale(1.03);
+    }
+    .coming-soon-card__overlay {
+      opacity: 1;
+    }
+    .coming-soon-card__content {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+
+// CTA Section Styles
+.coming-soon-slider__cta {
+  margin-top: $spacing-3xl;
+  text-align: center;
+  padding: $spacing-3xl; // Increased padding
+  background: $background-light; // Solid background
+  border-radius: $border-radius-xl;
+  // Removed border and backdrop-filter
+
+  &-title {
+    font-size: $font-size-xl;
+    color: $light-text;
+    margin-bottom: $spacing-lg;
+    font-weight: $font-weight-medium;
+  }
+
+  &-button {
+    background: $primary-accent; // Solid accent color
+    color: $light-text;
+    padding: $spacing-lg $spacing-2xl; // Increased vertical padding
+    border-radius: $border-radius-xl; // More rounded corners
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    border: none;
+    cursor: pointer;
+    transition: $transition-base;
+    box-shadow: 0 0 15px rgba($primary-accent, 0.5); // Subtle glow
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba($primary-accent, 0.7); // Enhanced glow on hover
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 0 10px rgba($primary-accent, 0.4); // Slightly reduced glow on active
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: map-get($breakpoints, 'lg')) {
+  .coming-soon-card {
+    flex: 0 0 calc(50% - #{$spacing-lg / 2}); 
+    // Keep 2 columns on large tablets if desired
+  }
+
+  .coming-soon-slider__cta {
+    margin-top: $spacing-2xl;
+    padding: $spacing-xl;
+
+    &-title {
+      font-size: $font-size-lg;
+    }
+
+    &-button {
+      padding: $spacing-md $spacing-xl;
+      font-size: $font-size-sm;
+    }
+  }
+}
+
+@media (max-width: map-get($breakpoints, 'md')) {
+  .coming-soon-card {
+    flex: 0 0 80%; // Show slightly less than 1 card on mobile
+  }
+}
+
+@media (max-width: map-get($breakpoints, 'sm')) {
+   .coming-soon-card {
+    flex: 0 0 90%; 
+  }
+
+  .coming-soon-slider__cta {
+    margin-top: $spacing-xl;
+    padding: $spacing-lg;
+
+    &-title {
+      font-size: $font-size-md;
+      margin-bottom: $spacing-md;
+    }
+  }
+} 

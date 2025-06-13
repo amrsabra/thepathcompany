@@ -1,0 +1,346 @@
+@import 'variables';
+
+.courses-page {
+  min-height: 100vh;
+  background: $background-dark;
+  color: $light-text;
+
+  .courses-hero {
+    padding: calc(80px + 3rem) 1rem 3rem;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff, #e0e0e0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 1.5rem;
+    }
+  }
+
+  .courses-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .categories-sidebar {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: $light-text;
+      font-weight: 600;
+    }
+
+    .categories-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .category-button {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba($primary-accent, 0.1), rgba($main-cta, 0.1));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.1);
+        transform: translateX(4px);
+
+        &::before {
+          opacity: 1;
+        }
+
+        .category-icon {
+          color: $primary-accent;
+          transform: scale(1.1);
+        }
+      }
+
+      &.active {
+        background: rgba($primary-accent, 0.1);
+        border-color: $primary-accent;
+        color: $light-text;
+        box-shadow: 0 0 20px rgba($primary-accent, 0.2);
+
+        .category-icon {
+          color: $primary-accent;
+        }
+      }
+
+      .category-icon {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .category-name {
+        flex: 1;
+        text-align: left;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 0.5rem;
+  }
+
+  .course-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba($primary-accent, 0.2);
+      border-color: rgba($primary-accent, 0.3);
+
+      .course-thumbnail img {
+        transform: scale(1.05);
+      }
+    }
+
+    .course-thumbnail {
+      position: relative;
+      padding-top: 56.25%; // 16:9 aspect ratio
+      overflow: hidden;
+
+      img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+    }
+
+    .course-content {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: $light-text;
+        font-weight: 600;
+      }
+
+      .instructor {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 1rem;
+      }
+
+      .course-stats {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0.5rem 0 1.5rem;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+
+        .rating {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          color: #ffd700;
+        }
+
+        .duration {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          
+          &::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+
+      .view-course {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1.5rem;
+        background: linear-gradient(135deg, rgba($primary-accent, 0.1), rgba($main-cta, 0.1));
+        border: 1px solid rgba($primary-accent, 0.2);
+        border-radius: 12px;
+        color: $primary-accent;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+
+        span, svg {
+          position: relative;
+          z-index: 2;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, $primary-accent, $main-cta);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: 1;
+          border-radius: inherit;
+        }
+
+        &:hover {
+          border-color: transparent;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba($primary-accent, 0.3);
+
+          &::before {
+            opacity: 1;
+          }
+
+          span, svg {
+            color: $light-text;
+          }
+
+          svg {
+            transform: translateX(4px);
+          }
+        }
+      }
+    }
+  }
+
+  .subscription-cta {
+    text-align: center;
+    padding: 4rem 1rem;
+    background: linear-gradient(135deg, rgba($primary-accent, 0.1), rgba($main-cta, 0.1));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 2rem;
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+    }
+
+    .subscribe-button {
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, $primary-accent, $main-cta);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+          0 4px 15px rgba($primary-accent, 0.3),
+          0 0 30px rgba($main-cta, 0.2);
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: transform 0.5s ease;
+      }
+
+      &:hover::before {
+        transform: translateX(100%);
+      }
+    }
+  }
+} 

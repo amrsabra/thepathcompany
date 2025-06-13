@@ -1,0 +1,96 @@
+// Colors
+$background-dark: #171721;
+$background-light: #1A1A24;
+$light-text: #F3F3F3;
+$light-text-secondary: rgba(255, 255, 255, 0.6);
+$primary-accent: #872B97;
+$main-cta: #FF3C68;
+$secondary-cta: #FF7130;
+$border-color: rgba(255, 255, 255, 0.1);
+
+// Gradients
+$gradient-primary: linear-gradient(135deg, $primary-accent, $main-cta, $secondary-cta);
+
+// Typography
+$font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$font-family-arabic: 'Noto Sans Arabic', sans-serif;
+$font-size-base: 1rem;
+$font-size-sm: 0.8125rem;
+$font-size-md: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 2.5rem;
+$font-size-3xl: 3rem;
+$font-size-4xl: 4.5rem;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 600;
+$font-weight-extrabold: 800;
+
+// Spacing
+$spacing-xs: 0.5rem;
+$spacing-sm: 0.75rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-2xl: 3rem;
+$spacing-3xl: 4rem;
+$spacing-4xl: 6rem;
+$spacing-5xl: 8rem;
+
+// Border Radius
+$border-radius-sm: 6px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 20px;
+$border-radius-2xl: 50px;
+$border-radius-full: 9999px;
+
+// Transitions
+$transition-base: all 0.3s ease;
+$transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-transform: transform 0.3s ease;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal: 1040;
+$z-index-popover: 1050;
+$z-index-tooltip: 1060;
+
+// Shadows
+$shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+$shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.3);
+$shadow-glow: 0 0 20px rgba($main-cta, 0.8);
+
+// Hover Effects
+$hover-transform: translateY(-2px);
+$hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
+$hover-scale: scale(1.1);
+
+// Card Styles
+$card-padding: $spacing-lg;
+$card-border-radius: $border-radius-lg;
+$card-shadow: $shadow-sm;
+$card-hover-bg: rgba(0, 0, 0, 0.9);
+$card-overlay-gradient: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.8));
+
+// Button Styles
+$button-padding: $spacing-sm $spacing-xl;
+$button-border-radius: $border-radius-2xl;
+$button-hover-bg: rgba(255, 255, 255, 0.2);
+
+// Container
+$container-max-width: 1400px;
+$container-padding: 0 $spacing-xl;
+
+// Responsive Breakpoints
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px
+); 

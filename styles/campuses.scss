@@ -1,0 +1,218 @@
+.campuses-page {
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(135, 43, 151, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 60, 104, 0.12) 0%, transparent 50%),
+    linear-gradient(135deg, #1a1a2e, #16213e);
+  padding-top: 80px;
+  color: #ffffff;
+}
+
+.campuses-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.campuses-header {
+  text-align: center;
+  margin-bottom: 4rem;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, #ffffff, #e0e0e0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: #ffffff;
+  }
+
+  .gradient-line {
+    width: 60px;
+    height: 3px;
+    margin: 1rem auto;
+    background: linear-gradient(90deg, #872B97, #FF3C68);
+    border-radius: 2px;
+  }
+
+  p {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+.campuses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.campus-card {
+  background: rgba(23, 23, 33, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent,
+      rgba(135, 43, 151, 0.5),
+      rgba(255, 60, 104, 0.5),
+      transparent
+    );
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(135, 43, 151, 0.2);
+  }
+
+  .campus-content {
+    padding: 2rem;
+
+    .campus-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .campus-icon {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin: 0;
+      }
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .campus-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+
+      span {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+
+      .skill-tag {
+        background: rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+
+    .explore-button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #872B97, #FF3C68);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      svg {
+        transition: transform 0.3s ease;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(135, 43, 151, 0.3);
+
+        svg {
+          transform: translateX(4px);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .campuses-container {
+    padding: 1.5rem;
+  }
+
+  .campuses-grid {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .campuses-page {
+    .campuses-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .campuses-header {
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      p {
+        font-size: 1.125rem;
+      }
+    }
+  }
+}
