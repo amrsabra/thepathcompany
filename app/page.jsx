@@ -147,7 +147,7 @@ export default function WaitlistPage() {
       >
         <div className="waitlist-header">
           <h2 className="gradient-text">
-            Early Access to the Future of Learning
+            Early access to the<br />Future of Learning
           </h2>
           {!submitted && (
           <p>
