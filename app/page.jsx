@@ -146,9 +146,8 @@ export default function WaitlistPage() {
         className="content-card"
       >
         <div className="waitlist-header">
-          <h2 className="gradient-text">
-            Early access to the<br />Future of Learning
-          </h2>
+          <h2 className="gradient-text header-desktop">Early access to the Future of Learning</h2>
+          <h2 className="gradient-text header-mobile">Early access to the<br />Future of Learning</h2>
           {!submitted && (
           <p>
             Be among the first to experience cinematic learning.
