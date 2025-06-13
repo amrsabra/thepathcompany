@@ -1,7 +1,7 @@
-@import './_variables.scss';
-
-// Import component styles
-@import './footer.scss'; // Add footer styles import
+@use 'sass:color';
+@use 'sass:map';
+@use './variables.scss' as *;
+@use './footer.scss' as *;
 
 // Brand Colors
 $background-dark: #171721;
@@ -13,9 +13,16 @@ $error-color: #ef4444;
 
 // CSS Variables
 :root {
-  --primary-color: #{$secondary-cta};
-  --primary-color-light: #{lighten($secondary-cta, 10%)};
-  --primary-color-dark: #{darken($secondary-cta, 10%)};
+  --background-dark: #{$background-dark};
+  --background-light: #{$background-light};
+  --light-text: #{$light-text};
+  --light-text-secondary: #{$light-text-secondary};
+  --primary-accent: #{$primary-accent};
+  --main-cta: #{$main-cta};
+  --secondary-cta: #{$secondary-cta};
+  --border-color: #{$border-color};
+  --primary-color-light: #{color.adjust($secondary-cta, $lightness: 10%)};
+  --primary-color-dark: #{color.adjust($secondary-cta, $lightness: -10%)};
 }
 
 // Gradients

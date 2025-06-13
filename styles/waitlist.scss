@@ -1,5 +1,6 @@
 @use 'sass:color';
 @use 'sass:map';
+@use './variables.scss' as *;
 @use './main.scss' as *;
 
 .waitlist-page {
@@ -12,8 +13,8 @@
   overflow: hidden;
 
   background: 
-    radial-gradient(circle at 20% 20%, color.adjust(#872B97, $alpha: -0.88) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, color.adjust(#FF3C68, $alpha: -0.88) 0%, transparent 50%),
+    radial-gradient(circle at 20% 20%, color.adjust($primary-accent, $alpha: -0.88) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, color.adjust($secondary-cta, $alpha: -0.88) 0%, transparent 50%),
     linear-gradient(135deg, #1a1a2e, #16213e);
   color: #ffffff;
 
@@ -22,7 +23,7 @@
     z-index: 10;
     max-width: 900px;
     width: 100%;
-    background: color.adjust(#171721, $alpha: -0.08);
+    background: color.adjust($background-dark, $alpha: -0.08);
     border-radius: 1rem;
     border: 1px solid color.adjust(#ffffff, $alpha: -0.92);
     backdrop-filter: blur(10px);

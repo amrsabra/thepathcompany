@@ -1,11 +1,11 @@
 // Colors
-$background-dark: #171721;
+$background-dark: #0f0f0f !default;
 $background-light: #1A1A24;
 $light-text: #F3F3F3;
 $light-text-secondary: rgba(255, 255, 255, 0.6);
-$primary-accent: #872B97;
+$primary-accent: #872B97 !default;
 $main-cta: #FF3C68;
-$secondary-cta: #FF7130;
+$secondary-cta: #FF3C68 !default;
 $border-color: rgba(255, 255, 255, 0.1);
 
 // Gradients
@@ -93,4 +93,4 @@ $breakpoints: (
   'lg': 1024px,
   'xl': 1280px,
   '2xl': 1536px
-); 
+) !default; 
