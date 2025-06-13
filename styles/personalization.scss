@@ -1,7 +1,14 @@
-@import './main.scss';
+@use 'sass:color';
+@use 'sass:map';
+@use './variables.scss' as *;
+@use './main.scss' as *;
 
 // Variables
-$modal-bg: rgba($background-dark, 0.95);
+$modal-bg: color.adjust($background-dark, $alpha: -0.05);
+$modal-border-radius: 1rem;
+$modal-padding: 2rem;
+$modal-width: 90%;
+$modal-max-width: 600px;
 $option-bg: rgba($light-text, 0.05);
 $option-border: rgba($light-text, 0.1);
 $option-hover-bg: rgba($light-text, 0.1);

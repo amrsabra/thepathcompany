@@ -1,7 +1,7 @@
-@import './main.scss';
 @use 'sass:color';
 @use 'sass:map';
 @use './variables.scss' as *;
+@use './main.scss' as *;
 
 // Variables
 $card-hover-bg: rgba(0, 0, 0, 0.85);
