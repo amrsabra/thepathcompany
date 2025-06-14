@@ -317,12 +317,62 @@
   .countdown-section .countdown-item span {
     font-size: 0.6rem !important;
   }
-} 
-  .countdown-section .countdown-item {
-    font-size: 1.5rem !important;
-    min-width: 60px !important;
-    padding: 0.5rem 0.3rem !important;
+}
+
+/* Specific device size adjustments */
+@media screen and (width: 1280px) and (height: 800px) {
+  .waitlist-page {
+    padding-top: 6rem;
+    min-height: 100vh;
+    overflow-y: auto;
   }
-  .countdown-section .countdown-item span {
-    font-size: 0.7rem !important;
+  .background-stars {
+    padding-top: 6rem;
+    img {
+      height: 48px;
+    }
   }
+  .content-card {
+    margin-top: 3rem;
+  }
+}
+
+@media screen and (width: 1024px) and (height: 600px) {
+  .waitlist-page {
+    padding-top: 5rem;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  .background-stars {
+    padding-top: 5rem;
+    img {
+      height: 40px;
+    }
+  }
+  .content-card {
+    margin-top: 2.5rem;
+  }
+}
+
+@media screen and (width: 375px) and (height: 667px) {
+  .waitlist-page {
+    padding-top: 4rem;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  .background-stars {
+    padding-top: 4rem;
+    img {
+      height: 32px;
+    }
+  }
+  .content-card {
+    margin-top: 2rem;
+  }
+  .waitlist-header h2 {
+    font-size: 1.2rem !important;
+  }
+  .waitlist-form {
+    gap: 0.7rem !important;
+  }
+}
