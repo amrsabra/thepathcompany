@@ -147,7 +147,7 @@ export default function WaitlistPage() {
       >
         <div className="waitlist-header">
           <h2 className="gradient-text header-desktop">Unlock Access to Cinematic Learning</h2>
-          <h2 className="gradient-text header-mobile">Unlcok Access to<br />Cinematic Learning</h2>
+          <h2 className="gradient-text header-mobile">Unlock Access to Cinematic Learning</h2>
           {!submitted && (
           <p>
             Where learning meets storytelling, and excellence is the baseline.
