@@ -146,11 +146,11 @@ export default function WaitlistPage() {
         className="content-card"
       >
         <div className="waitlist-header">
-          <h2 className="gradient-text header-desktop">Early access to the Future of Learning</h2>
-          <h2 className="gradient-text header-mobile">Early access to the<br />Future of Learning</h2>
+          <h2 className="gradient-text header-desktop">Unlock Access to Cinematic Learning</h2>
+          <h2 className="gradient-text header-mobile">Unlcok Access to<br />Cinematic Learning</h2>
           {!submitted && (
           <p>
-            Be among the first to experience cinematic learning.
+            Where learning meets storytelling, and excellence is the baseline.
           </p>
           )}
           {submitted && (
@@ -227,7 +227,7 @@ export default function WaitlistPage() {
                 Join the Elite Waitlist
               </motion.button>
               <div className="waitlist-count mt-2 text-xs text-gray-400">
-              {waitlistCount} users have joined the waitlist!
+              {waitlistCount} visionary learners have already joined. Will you be next?
               </div>
             </div>
           </form>
