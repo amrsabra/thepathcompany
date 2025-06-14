@@ -146,15 +146,17 @@ export default function WaitlistPage() {
         className="content-card"
       >
         <div className="waitlist-header">
-          <h2 className="gradient-text header-desktop">Unlock Access to Cinematic Learning</h2>
-          <h2 className="gradient-text header-mobile">Unlock Access to Cinematic Learning</h2>
           {!submitted && (
-          <p>
-            Where learning meets storytelling, and excellence is the baseline.
-          </p>
+            <>
+              <h2 className="gradient-text header-desktop">Unlock Access to Cinematic Learning</h2>
+              <h2 className="gradient-text header-mobile">Unlock Access to Cinematic Learning</h2>
+              <p>
+                Learning meets storytelling. Excellence leads the way.
+              </p>
+            </>
           )}
           {submitted && (
-            <p className="mt-2 text-white font-bold">You're Registered!</p>
+            <h2 className="gradient-text">You Are In!</h2>
           )}
         </div>
 
@@ -231,14 +233,26 @@ export default function WaitlistPage() {
               </div>
             </div>
           </form>
-        ) : (
-          <div className="thank-you-message relative">
-            <p className="mt-2">
-              Welcome to the cinematic revolution in learning. You'll be among the first to experience The Path Company.
-            </p>
-            <p className="mt-4">Your reward will arrive on launch day, stay tuned.</p>
-          </div>
-        )}
+) : (
+  <div className="thank-you-message relative text-white text-center max-w-xl mx-auto">
+    <h2 className="text-2xl font-semibold mb-4">
+      You’ve Claimed Your Front-Row Seat
+    </h2>
+    <p className="text-base mb-4">
+      Congratulations. You’re officially on the elite waitlist for <strong>The Path Company</strong>. 
+      As a founding member, you’ll be among the first to experience our cinematic learning platform 
+      where education meets storytelling and excellence is the standard.
+    </p>
+    <p className="text-base">
+      We’re building something extraordinary, and now you’re a part of it. 
+      Your early access and rewards arrive on launch day.
+    </p>
+    <p className="text-base mt-4">
+      Stay sharp. Your journey begins soon.
+    </p>
+  </div>
+)}
+
 
         <div className="countdown-section">
           <h3>Launch Countdown</h3>
