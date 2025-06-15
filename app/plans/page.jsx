@@ -14,7 +14,7 @@ import {
   FiHelpCircle,
   FiChevronDown
 } from 'react-icons/fi';
-import Header from '../../components/header/Header';
+import Header from '../../components/Header/Header';
 import '../../styles/subscription-plans.scss';
 import { supabase } from '../../supabaseClient';
 import { useRouter } from 'next/navigation';

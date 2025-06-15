@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Header from '../../components/header/Header';
+import Header from '../../components/Header/Header';
 import { FiArrowRight, FiCode, FiBriefcase, FiHeart, FiZap } from 'react-icons/fi';
 import '../../styles/campuses.scss';
 

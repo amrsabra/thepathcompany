@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Header from '../../components/header/Header';
+import Header from '../../components/Header/Header';
 import { supabase } from '../../supabaseClient';
 import '../../styles/reset-password.scss';
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
 import { FaApple } from 'react-icons/fa';
-import Header from '../../components/header/Header';
+import Header from '../../components/Header/Header';
 import '../../styles/login.scss';
 import { supabase } from '../../supabaseClient';
 import { useRouter } from 'next/navigation';
