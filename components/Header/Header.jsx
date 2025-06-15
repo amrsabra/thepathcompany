@@ -110,7 +110,7 @@ const Header = ({ forceSolid = false }) => {
   };
 
   return (
-    <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
+    <header className={`header ${isScrolled ? 'scrolled' : ''}`} style={{ '--header-height': '120px' }}>
       <nav className="nav-content">
         <div className="logo-container">
           <a href="/" className="logo">

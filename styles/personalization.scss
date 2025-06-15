@@ -1,4 +1,4 @@
-@use './_variables.scss' as *;
+@use 'sass:map';
 @use './main' as *;
 @use './variables' as *;
 
@@ -61,7 +61,7 @@ $hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
     color: transparent;
     font-weight: $font-weight-extrabold;
 
-    @media (max-width: map-get($breakpoints, 'md')) {
+    @media (max-width: map.get($breakpoints, 'md')) {
       font-size: $font-size-xl;
     }
   }

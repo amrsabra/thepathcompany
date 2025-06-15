@@ -1,4 +1,4 @@
-@use './_variables.scss' as *;
+@use 'sass:map';
 @use './main' as *;
 @use './variables' as *;
 
@@ -27,7 +27,7 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: $spacing-3xl 0;
+  padding: calc(var(--header-height, 80px) + #{$spacing-3xl}) 0 $spacing-3xl 0;
   overflow: hidden;
 
   &__background {
@@ -47,6 +47,7 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
     height: 100%;
     background: $gradient-primary;
     opacity: 0.1;
+    z-index: -1;
   }
 
   &__particles {
@@ -58,12 +59,14 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
     background-image: radial-gradient(circle at 1px 1px, rgba($light-text, 0.1) 1px, transparent 0);
     background-size: 40px 40px;
     animation: float 6s ease-in-out infinite;
+    z-index: -1;
   }
 
   &__content {
     max-width: 1200px;
     margin: 0 auto;
     text-align: center;
+    z-index: 1;
   }
 
   &__title {
@@ -79,7 +82,7 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
       margin-bottom: $spacing-2xl;
     }
 
-    @media (max-width: map-get($breakpoints, 'md')) {
+    @media (max-width: map.get($breakpoints, 'md')) {
       font-size: $font-size-3xl;
     }
   }
@@ -99,7 +102,7 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
     justify-content: center;
     flex-wrap: wrap;
 
-    @media (max-width: map-get($breakpoints, 'sm')) {
+    @media (max-width: map.get($breakpoints, 'sm')) {
       flex-direction: column;
       align-items: center;
     }
@@ -233,7 +236,7 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
 }
 
 // Responsive Design
-@media (max-width: map-get($breakpoints, 'md')) {
+@media (max-width: map.get($breakpoints, 'md')) {
   .hero {
     &__title {
       font-size: $font-size-2xl;

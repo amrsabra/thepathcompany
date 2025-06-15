@@ -36,7 +36,7 @@ const Homepage = () => {
       <Header />
       {/* Hero Section */}
       <section className="hero" ref={heroRef}>
-        <div className="hero__background">
+      <div className="hero__background">
           <div className="hero__gradient-overlay" />
           <div className="hero__particles" />
         </div>
@@ -48,7 +48,7 @@ const Homepage = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="hero__title">
-              <img src="/logo.png" alt="The Path Company Logo" className="mx-auto mb-2 h-16 w-auto" />
+            <img src="/logo.png" alt="The Path Company Logo" className="mx-auto mb-2 h-16 w-auto" />
               <br />
               Where Learning Meets
               <br />

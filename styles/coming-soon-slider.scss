@@ -1,4 +1,7 @@
-@import './_variables.scss';
+@use 'sass:map';
+@use 'sass:color';
+@use 'sass:math';
+@use './variables' as *;
 
 .coming-soon-slider {
   padding: $spacing-xl 0 $spacing-4xl;
@@ -43,7 +46,7 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    background: rgba(darken($background-dark, 5%), 0.6);
+    background: rgba(color.adjust($background-dark, $lightness: -5%), 0.6);    
     color: rgba($light-text, 0.7);
     border: 1px solid rgba($light-text, 0.1);
     backdrop-filter: blur(5px);
@@ -59,7 +62,7 @@
 
     &:hover {
       opacity: 1;
-      background: rgba(darken($background-dark, 3%), 0.8);
+      background: rgba(color.adjust($background-dark, $lightness: -3%), 0.8);
       color: $light-text;
       border-color: rgba($light-text, 0.2);
       transform: translateY(-50%) scale(1.05);
@@ -71,14 +74,14 @@
 
     &.prev {
       left: -$spacing-xl; // Position outside container slightly
-      @media (max-width: map-get($breakpoints, 'md')) {
+      @media (max-width: map.get($breakpoints, 'md')) {
         left: -$spacing-sm;
       }
     }
 
     &.next {
       right: -$spacing-xl; // Position outside container slightly
-      @media (max-width: map-get($breakpoints, 'md')) {
+      @media (max-width: map.get($breakpoints, 'md')) {
         right: -$spacing-sm;
       }
     }
@@ -113,7 +116,7 @@
 }
 
 .coming-soon-card {
-  flex: 0 0 calc(50% - #{$spacing-lg / 2});
+  flex: 0 0 calc(50% - #{math.div($spacing-lg, 2)});
   position: relative;
   border-radius: $border-radius-lg;
   overflow: hidden;
@@ -352,9 +355,9 @@
 }
 
 // Responsive adjustments
-@media (max-width: map-get($breakpoints, 'lg')) {
+@media (max-width: map.get($breakpoints, 'lg')) {
   .coming-soon-card {
-    flex: 0 0 calc(50% - #{$spacing-lg / 2}); 
+    flex: 0 0 calc(50% - #{math.div($spacing-lg, 2)}); 
     // Keep 2 columns on large tablets if desired
   }
 
@@ -373,13 +376,13 @@
   }
 }
 
-@media (max-width: map-get($breakpoints, 'md')) {
+@media (max-width: map.get($breakpoints, 'md')) {
   .coming-soon-card {
     flex: 0 0 80%; // Show slightly less than 1 card on mobile
   }
 }
 
-@media (max-width: map-get($breakpoints, 'sm')) {
+@media (max-width: map.get($breakpoints, 'sm')) {
    .coming-soon-card {
     flex: 0 0 90%; 
   }

@@ -1,4 +1,4 @@
-@import './_variables.scss';
+@use './variables' as *;
 
 .faq-page {
   min-height: 100vh;

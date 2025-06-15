@@ -1,8 +1,9 @@
-@use './_variables.scss' as *;
-@use './_variables' as *; // Import only variables
+@use 'sass:color';
+@use 'sass:map';
+@use './_variables' as *;
 
 .footer {
-  background-color: darken($background-dark, 3%);
+  background-color: color.adjust($background-dark, $lightness: -3%);
   padding: $spacing-3xl 0 $spacing-xl;
   border-top: 1px solid rgba($light-text, 0.05);
   color: $light-text-secondary;
@@ -197,7 +198,7 @@
     letter-spacing: 0.02em;
 
     &:hover {
-      background: lighten($primary-accent, 5%);
+      background: color.adjust($primary-accent, $lightness: 5%);
       transform: translateY(-2px);
     }
   }
@@ -246,7 +247,7 @@
   }
 
   /* Responsive Adjustments */
-  @media (max-width: map-get($breakpoints, 'lg')) {
+  @media (max-width: map.get($breakpoints, 'lg')) {
     &__grid {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -256,7 +257,7 @@
     }
   }
 
-  @media (max-width: map-get($breakpoints, 'md')) {
+  @media (max-width: map.get($breakpoints, 'md')) {
     padding: $spacing-2xl 0 $spacing-lg;
 
     &__grid {
@@ -264,7 +265,7 @@
     }
   }
 
-  @media (max-width: map-get($breakpoints, 'sm')) {
+  @media (max-width: map.get($breakpoints, 'sm')) {
     &__grid {
       grid-template-columns: 1fr;
     }

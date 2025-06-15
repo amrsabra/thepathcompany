@@ -1,5 +1,6 @@
-@import './main.scss';
-@import './_variables.scss';
+@use 'sass:map';
+@use './variables' as *;
+@use './main' as *;
 
 .signup-page {
   min-height: 100vh;
@@ -469,7 +470,7 @@
   }
 }
 
-@media (max-width: map-get($breakpoints, 'lg')) {
+@media (max-width: map.get($breakpoints, 'lg')) {
   .plans-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -477,7 +478,7 @@
 }
 
 // Responsive Design
-@media (max-width: map-get($breakpoints, 'md')) {
+@media (max-width: map.get($breakpoints, 'md')) {
   .signup-container {
     grid-template-columns: 1fr;
   }

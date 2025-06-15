@@ -1,5 +1,6 @@
-@import './main.scss';
-@import './_variables.scss';
+@use 'sass:color';
+@use './variables' as *;
+@use './main' as *;
 
 
 // Import variables if not already imported through main.scss
@@ -187,7 +188,7 @@ $secondary-accent: #FF7130; // Adding the missing variable
       transition: all 0.3s ease;
 
       &:hover {
-        background: darken($primary-accent, 5%);
+        background: color.adjust($primary-accent, $lightness: -5%);
         transform: translateY(-2px);
       }
 

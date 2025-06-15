@@ -1,7 +1,8 @@
+@use 'sass:color';
 @use './_variables.scss' as *;
 
 // Import component styles
-@use './footer'; // Add footer styles import
+@use './footer' as footer;
 
 // Brand Colors
 $background-dark: #171721;
@@ -14,8 +15,8 @@ $error-color: #ef4444;
 // CSS Variables
 :root {
   --primary-color: #{$secondary-cta};
-  --primary-color-light: #{lighten($secondary-cta, 10%)};
-  --primary-color-dark: #{darken($secondary-cta, 10%)};
+  --primary-color-light: #{color.adjust($secondary-cta, $lightness: 10%)};
+  --primary-color-dark: #{color.adjust($secondary-cta, $lightness: -10%)};
 }
 
 // Gradients
@@ -25,14 +26,16 @@ $gradient-primary: linear-gradient(135deg, $primary-accent, $main-cta, $secondar
 $font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
 // Base Styles
-* {
-  html, body {
-    margin: 0;
-    padding: 0;
-    scroll-behavior: smooth;
-    height: 100%;
-    box-sizing: border-box;
-  }  
+html, body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
 }
 
 body {

@@ -1,4 +1,4 @@
-@use './_variables.scss' as *;
+@use 'sass:map';
 @use './main' as *;
 @use './variables' as *;
 
@@ -159,7 +159,7 @@
 }
 
 // Responsive styles
-@media (max-width: map-get($breakpoints, 'lg')) {
+@media (max-width: map.get($breakpoints, 'lg')) {
   .membership-benefits {
     &__content {
       flex-direction: column;
@@ -185,7 +185,7 @@
   }
 }
 
-@media (max-width: map-get($breakpoints, 'sm')) {
+@media (max-width: map.get($breakpoints, 'sm')) {
   .membership-benefits {
     &__left {
       .membership-benefits__header-text {
