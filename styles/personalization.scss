@@ -1,4 +1,5 @@
-@import './main.scss';
+@use './main' as *;
+@use './variables' as *;
 
 // Variables
 $modal-bg: rgba($background-dark, 0.95);

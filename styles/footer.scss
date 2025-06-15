@@ -1,4 +1,4 @@
-@import './_variables.scss'; // Import only variables
+@use './_variables' as *; // Import only variables
 
 .footer {
   background-color: darken($background-dark, 3%);

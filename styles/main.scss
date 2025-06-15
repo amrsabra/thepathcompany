@@ -1,7 +1,7 @@
-@import './_variables.scss';
+@use './variables' as *;
 
 // Import component styles
-@import './footer.scss'; // Add footer styles import
+@use './footer'; // Add footer styles import
 
 // Brand Colors
 $background-dark: #171721;

@@ -1,4 +1,5 @@
-@import './main.scss';
+@use './main' as *;
+@use './variables' as *;
 
 .membership-benefits {
   padding: $spacing-4xl 0;

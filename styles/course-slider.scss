@@ -1,4 +1,5 @@
-@import './main.scss';
+@use './main' as *;
+@use './variables' as *;
 
 // Variables
 $card-hover-bg: rgba(0, 0, 0, 0.85);
