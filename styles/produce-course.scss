@@ -1,4 +1,6 @@
 @import './main.scss';
+@import './_variables.scss';
+
 
 // Import variables if not already imported through main.scss
 $secondary-accent: #FF7130; // Adding the missing variable
