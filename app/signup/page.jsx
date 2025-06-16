@@ -17,6 +17,7 @@ import {
   FiEye,
   FiEyeOff
 } from 'react-icons/fi';
+import { FcGoogle } from 'react-icons/fc';
 import Header from '../../components/Header/Header';
 import '../../styles/signup.scss';
 import '../../styles/subscription-plans.scss';
@@ -235,12 +236,8 @@ const SignUp = () => {
           </div>
           <div className="social-signup">
             <button type="button" className="social-button" onClick={handleGoogleSignUp}>
-              {/* Google SVG */}
+              <FcGoogle size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
               Continue with Google
-            </button>
-            <button type="button" className="social-button" onClick={handleAppleSignUp}>
-              {/* Apple SVG */}
-              Continue with Apple
             </button>
           </div>
           <div className="divider">
@@ -250,7 +247,7 @@ const SignUp = () => {
         <div className="right-column">
           {showConfirmation ? (
             <div className="confirmation-message">
-              <Image src="/logo.png" alt="Logo" width={80} height={80} className="logo" />
+              <Image src="/logoicon.png" alt="Logo" width={80} height={80} className="logo" />
               {!emailConfirmed ? (
                 <>
                   <h2>Check Your Email</h2>
@@ -379,7 +376,7 @@ const SignUp = () => {
               <button type="submit" className="signup-button" disabled={isLoading}>
                 {isLoading ? (
                   <span className="signup-spinner">
-                    <svg viewBox="0 0 50 50">
+                    <svg width="24" height="24" viewBox="0 0 50 50">
                       <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5" stroke="currentColor" />
                     </svg>
                   </span>

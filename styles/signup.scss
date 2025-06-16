@@ -274,6 +274,11 @@
 }
 
 .signup-button {
+  min-width: 120px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 0.875rem;
   background: linear-gradient(135deg, #872B97, #FF3C68);
@@ -561,12 +566,10 @@
   width: 100%;
 
   img.logo {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 1.5rem;
+    width: 60x;
+    height: 60px;
+    margin-bottom: 2rem;
     border-radius: 16px;
-    box-shadow: 0 2px 12px rgba(135, 43, 151, 0.12);
-    background: #fff;
     object-fit: contain;
   }
 
@@ -587,14 +590,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 2rem auto;
-  min-height: 60px;
-  svg {
-    width: 48px;
-    height: 48px;
-    color: $primary-accent;
-    animation: spin 1s linear infinite;
-  }
+}
+
+.signup-spinner svg {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 @keyframes spin {
