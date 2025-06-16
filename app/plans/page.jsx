@@ -31,10 +31,10 @@ const SubscriptionPlans = () => {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (!user) {
-          router.push('/login');
+          // No user signed in — skip profile creation
+          setIsLoading(false);
           return;
-        }
-
+        }        
         // Get pending profile data from localStorage
         const pendingProfile = localStorage.getItem('pendingProfile');
         

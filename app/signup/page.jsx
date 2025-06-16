@@ -96,10 +96,22 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleGoogleSignUp = () => {
-    // Implement Google sign-up logic
-    console.log('Google sign-up clicked');
-  };
+  const handleGoogleSignUp = async () => {
+    setIsLoading(true);
+  
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/plans`, // or any route you want after sign-in
+      },
+    });
+  
+    if (error) {
+      console.error("Google sign-in error:", error.message);
+      setErrors({ submit: 'Google sign-in failed. Please try again.' });
+      setIsLoading(false);
+    }
+  };  
 
   const handleAppleSignUp = () => {
     // Implement Apple sign-up logic
