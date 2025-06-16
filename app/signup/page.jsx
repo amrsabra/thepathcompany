@@ -109,43 +109,70 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+  
     setIsLoading(true);
     setErrors({});
-
+    setShowConfirmation(false);
+  
     try {
-      // Store profile data in localStorage before signup
+      const inputEmail = formData.email.trim().toLowerCase();
+      console.log("🔍 Normalized input email:", inputEmail);
+  
+      // Step 1: Check if email exists in the profiles table directly with ilike
+      const { data: existingProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .ilike('email', inputEmail)
+        .maybeSingle();
+  
+      if (profileError) {
+        console.error("Profile lookup failed:", profileError);
+        setErrors({ submit: 'Error verifying email address. Please try again.' });
+        setIsLoading(false);
+        return;
+      }
+  
+      if (existingProfile) {
+        console.log("Email already exists in profiles. Blocking sign-up.");
+        setErrors({ email: 'Email is already registered' });
+        setIsLoading(false);
+        return;
+      }
+  
+      // Step 2: Proceed with sign-up
       const profileData = {
         username: formData.username,
         first_name: formData.firstName,
         last_name: formData.lastName,
         date_of_birth: `${formData.birthYear}-${formData.birthMonth}-${formData.birthDay}`,
       };
+  
       localStorage.setItem('pendingProfile', JSON.stringify(profileData));
-
+  
       const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
+        email: inputEmail,
         password: formData.password,
         options: {
           data: profileData,
           emailRedirectTo: `${window.location.origin}/plans`,
         },
       });
-
+  
       if (error) {
-        if (error.message.includes('email')) {
-          setErrors({ email: 'Email already exists' });
-        } else {
-          setErrors({ submit: error.message });
-        }
-      } else {
-        setShowConfirmation(true);
+        console.error("Sign-up error:", error);
+        setErrors({ submit: error.message });
+        setIsLoading(false);
+        return;
       }
+  
+      setShowConfirmation(true);
     } catch (err) {
-      setErrors({ submit: 'Something went wrong. Please try again.' });
+      console.error("Unexpected error during sign-up:", err);
+      setErrors({ submit: 'Unexpected error occurred. Please try again.' });
     } finally {
       setIsLoading(false);
     }
-  };
+  };    
 
   useEffect(() => {
     if (!signupSuccess) return;

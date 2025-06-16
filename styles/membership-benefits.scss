@@ -6,15 +6,15 @@
   padding: $spacing-4xl 0;
   padding-bottom: $spacing-2xl;
   background: $background-dark;
-  position: relative;
+  position: relative; 
   overflow: hidden;
 
   .container {
     max-width: $container-max-width;
-    margin: 0 auto;
+    
     padding: $container-padding;
     position: relative;
-    z-index: 1;
+   
   }
 
   &__content {

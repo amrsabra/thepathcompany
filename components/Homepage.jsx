@@ -32,6 +32,7 @@ const Homepage = () => {
   };
 
   return (
+    <div>
     <div className="homepage">
       <Header />
       {/* Hero Section */}
@@ -92,6 +93,7 @@ const Homepage = () => {
       {showPersonalization && (
         <PersonalizationFlow onComplete={handlePersonalizationComplete} />
       )}
+    </div>
     </div>
   );
 };
