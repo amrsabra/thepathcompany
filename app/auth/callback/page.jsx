@@ -1,33 +1,32 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../../supabaseClient';
 import '../../../styles/auth-callback.scss';
 
 const AuthCallback = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        const accessToken = searchParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token');
-        const type = searchParams.get('type');
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const type = hashParams.get('type');
 
         if (!accessToken || !refreshToken) {
           throw new Error('No tokens found in URL');
         }
 
         if (type === 'recovery') {
-          // Don't set the session — just redirect to reset-password
+          // 🚀 Redirect to reset-password with tokens in query string
           router.push(`/reset-password?access_token=${accessToken}&refresh_token=${refreshToken}`);
           return;
         }
 
-        // For other types (signup, oauth login), set session
         const { error: sessionError } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
@@ -40,9 +39,9 @@ const AuthCallback = () => {
         } else {
           router.push('/');
         }
-      } catch (error) {
-        console.error('Error in auth callback:', error);
-        setError(error.message);
+      } catch (err) {
+        console.error('Error in auth callback:', err);
+        setError(err.message);
         setTimeout(() => {
           router.push('/login');
         }, 3000);
@@ -50,7 +49,7 @@ const AuthCallback = () => {
     };
 
     handleCallback();
-  }, [router, searchParams]);
+  }, [router]);
 
   if (error) {
     return (

@@ -16,39 +16,31 @@ const ResetPasswordComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const initialize = async () => {
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-
-      const errorCode = hashParams.get('error_code');
-      const errorDescription = hashParams.get('error_description');
-      const access_token = hashParams.get('access_token');
-      const refresh_token = hashParams.get('refresh_token');
-
-      if (errorCode || errorDescription) {
-        setError(decodeURIComponent(errorDescription || 'Invalid link.'));
-        return;
-      }
-
-      if (!access_token || !refresh_token) {
-        setError('Invalid or expired reset link. Please request a new one.');
-        return;
-      }
-
-      // Set session with token from URL
+    const queryParams = new URLSearchParams(window.location.search);
+    const access_token = queryParams.get('access_token');
+    const refresh_token = queryParams.get('refresh_token');
+  
+    if (!access_token || !refresh_token) {
+      setError('Invalid or expired reset link. Please request a new one.');
+      return;
+    }
+  
+    // Set session once with token so Supabase allows password reset
+    const setSessionAndContinue = async () => {
       const { error } = await supabase.auth.setSession({
         access_token,
         refresh_token,
       });
-
+  
       if (error) {
         setError('Could not verify reset link. Please try again.');
       } else {
         setIsReady(true);
       }
     };
-
-    initialize();
-  }, [router]);
+  
+    setSessionAndContinue();
+  }, []);  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
