@@ -97,27 +97,58 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleGoogleSignUp = async () => {
-    setIsLoading(true);
-  
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/plans`, // or any route you want after sign-in
-      },
-    });
-  
-    if (error) {
-      console.error("Google sign-in error:", error.message);
-      setErrors({ submit: 'Google sign-in failed. Please try again.' });
-      setIsLoading(false);
-    }
-  };  
+const handleGoogleSignUp = async () => {
+  setIsLoading(true);
 
-  const handleAppleSignUp = () => {
-    // Implement Apple sign-up logic
-    console.log('Apple sign-up clicked');
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/plans`,
+    },
+  });
+
+  if (error) {
+    console.error("Google sign-in error:", error.message);
+    setErrors({ submit: 'Google sign-in failed. Please try again.' });
+    setIsLoading(false);
+  }
+};
+
+useEffect(() => {
+  const insertGoogleProfileIfNeeded = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
+
+    const { data: existingProfile, error: profileFetchError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+      if (!existingProfile) {
+        const { user } = session;
+      
+        const { error: insertError } = await supabase.from('profiles').insert([{
+          id: user.id,
+          username: user.user_metadata.full_name || user.email.split('@')[0],
+          first_name: user.user_metadata.given_name || '',
+          last_name: user.user_metadata.family_name || '',
+          date_of_birth: null,
+          stripe_customer: null,
+        }]);
+      
+        if (insertError) {
+          console.error('Error inserting Google user into profiles table:', insertError);
+        } else {
+          console.log('Google user successfully added to profiles table.');
+        }
+      }
+      
   };
+
+  insertGoogleProfileIfNeeded();
+}, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -386,6 +417,9 @@ const SignUp = () => {
               </button>
             </form>
           )}
+          <div className="login-link-row">
+            <span>Already have an account? <Link href="/login">Log in</Link></span>
+          </div>
         </div>
       </div>
     </div>

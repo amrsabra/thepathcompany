@@ -19,12 +19,17 @@ const ForgotPassword = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}/reset-password`,
       });
-      if (error) throw error;
+
+      if (error) {
+        setError('Could not send reset email. Please check your email and try again.');
+        return;
+      }
+
       setSuccess(true);
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -32,14 +37,14 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password-page">
-      <Header />
+      <Header forceSolid={true} />
       <div className="forgot-password-container">
-        <div className="forgot-password-box">
+        <div className="forgot-password-content">
           <h1>Reset Password</h1>
           {!success ? (
             <>
               <p>Enter your email address and we'll send you a link to reset your password.</p>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="forgot-password-form">
                 <div className="form-group">
                   <input
                     type="email"
@@ -50,7 +55,7 @@ const ForgotPassword = () => {
                   />
                 </div>
                 {error && <div className="error-message">{error}</div>}
-                <button type="submit" disabled={isLoading}>
+                <button type="submit" className="reset-button" disabled={isLoading}>
                   {isLoading ? 'Sending...' : 'Send Reset Link'}
                 </button>
               </form>
@@ -58,15 +63,20 @@ const ForgotPassword = () => {
           ) : (
             <div className="success-message">
               <p>Check your email for the password reset link.</p>
+              <div className="back-to-login">
+                <Link href="/login">Back to Login</Link>
+              </div>
             </div>
           )}
-          <div className="back-to-login">
-            <Link href="/login">Back to Login</Link>
-          </div>
+          {!success && (
+            <div className="back-to-login">
+              <Link href="/login">Back to Login</Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default ForgotPassword; 
+export default ForgotPassword;

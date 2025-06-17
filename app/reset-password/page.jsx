@@ -1,108 +1,119 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '../../components/Header/Header';
 import { supabase } from '../../supabaseClient';
 import '../../styles/reset-password.scss';
 
 const ResetPasswordComponent = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const initializeReset = async () => {
-      try {
-        // First, sign out any existing session
-        await supabase.auth.signOut();
+    const initialize = async () => {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
 
-        // Get the access token from the URL
-        const accessToken = searchParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token');
+      const errorCode = hashParams.get('error_code');
+      const errorDescription = hashParams.get('error_description');
+      const access_token = hashParams.get('access_token');
+      const refresh_token = hashParams.get('refresh_token');
 
-        if (!accessToken || !refreshToken) {
-          setError('Invalid or expired reset link. Please try again.');
-          setTimeout(() => {
-            router.push('/forgot-password');
-          }, 3000);
-          return;
-        }
+      if (errorCode || errorDescription) {
+        setError(decodeURIComponent(errorDescription || 'Invalid link.'));
+        return;
+      }
 
-        // Set the session temporarily to allow password reset
-        const { error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken
-        });
+      if (!access_token || !refresh_token) {
+        setError('Invalid or expired reset link. Please request a new one.');
+        return;
+      }
 
-        if (error) throw error;
+      // Set session with token from URL
+      const { error } = await supabase.auth.setSession({
+        access_token,
+        refresh_token,
+      });
+
+      if (error) {
+        setError('Could not verify reset link. Please try again.');
+      } else {
         setIsReady(true);
-      } catch (error) {
-        setError('Invalid or expired reset link. Please try again.');
-        setTimeout(() => {
-          router.push('/forgot-password');
-        }, 3000);
       }
     };
 
-    initializeReset();
-  }, [searchParams, router]);
+    initialize();
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    setIsLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      setIsLoading(false);
+      setError('Passwords do not match.');
       return;
     }
 
-    try {
-      // Update the password
-      const { error } = await supabase.auth.updateUser({
-        password: password
-      });
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
 
-      if (error) throw error;
-      
-      // Sign out after password reset
-      await supabase.auth.signOut();
-      
-      setSuccess(true);
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
-    } catch (error) {
-      setError(error.message);
+    setIsLoading(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        await supabase.auth.signOut(); // 🔐 Sign out after resetting password
+        setSuccess(true);
+        setTimeout(() => router.push('/login'), 2000);
+      }
+    } catch (err) {
+      setError('Unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!isReady) {
+  // Show loading or error state first
+  if (!isReady && !error) {
     return (
       <div className="reset-password-page">
         <Header />
         <div className="reset-password-container">
           <div className="reset-password-box">
             <h1>Reset Password</h1>
-            <div className="loading-message">
-              <p>Preparing password reset...</p>
-            </div>
+            <p>Preparing reset form...</p>
           </div>
         </div>
       </div>
     );
   }
 
+  if (error) {
+    return (
+      <div className="reset-password-page">
+        <Header />
+        <div className="reset-password-container">
+          <div className="reset-password-box">
+            <h1>Error</h1>
+            <p className="error-message">{error}</p>
+            <p><a href="/forgot-password">Try again</a></p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main form
   return (
     <div className="reset-password-page">
       <Header />
@@ -156,4 +167,4 @@ export default function Page() {
       <ResetPasswordComponent />
     </Suspense>
   );
-} 
+}

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
-import { FaApple } from 'react-icons/fa';
 import Header from '../../components/Header/Header';
 import '../../styles/login.scss';
 import { supabase } from '../../supabaseClient';
@@ -24,7 +23,7 @@ const Login = () => {
     const redirectIfLoggedIn = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        router.push('/'); // Redirect to homepage
+        router.push('/');
       }
     };
     redirectIfLoggedIn();
@@ -36,7 +35,6 @@ const Login = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -47,17 +45,14 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
     }
-    
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -67,23 +62,38 @@ const Login = () => {
     if (!validateForm()) return;
     setErrors({});
     setIsLoading(true);
-  
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
-  
+
       if (error) {
         setErrors({ password: 'Incorrect email or password' });
       } else if (data?.session) {
-        router.push('/'); // Redirect to homepage on successful login
+        router.push('/');
       }
     } catch (err) {
       console.error('Login error:', err);
       setErrors({ password: 'Something went wrong. Please try again.' });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/` // redirect to home or dashboard
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error('Google login error:', err);
+      alert('Google login failed. Please try again.');
     }
   };
 
@@ -96,15 +106,11 @@ const Login = () => {
             <h1>Welcome Back!</h1>
             <p>Sign in to continue your learning journey</p>
           </div>
-          
+
           <div className="social-login">
-            <button type="button" className="social-button google">
+            <button type="button" className="social-button google" onClick={handleGoogleLogin}>
               <FcGoogle size={20} />
               <span>Continue with Google</span>
-            </button>
-            <button type="button" className="social-button apple">
-              <FaApple size={20} />
-              <span>Continue with Apple</span>
             </button>
           </div>
 
@@ -172,4 +178,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
