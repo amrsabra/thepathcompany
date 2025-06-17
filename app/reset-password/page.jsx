@@ -110,12 +110,12 @@ const ResetPasswordComponent = () => {
     <div className="reset-password-page">
       <Header />
       <div className="reset-password-container">
-        <div className="reset-password-box">
+        <div className="reset-password-content">
           <h1>Reset Password</h1>
           {!success ? (
             <>
               <p>Enter your new password below.</p>
-              <form onSubmit={handleSubmit}>
+              <form className="reset-password-form" onSubmit={handleSubmit}>
                 <div className="form-group">
                   <input
                     type="password"
@@ -137,7 +137,7 @@ const ResetPasswordComponent = () => {
                   />
                 </div>
                 {error && <div className="error-message">{error}</div>}
-                <button type="submit" disabled={isLoading}>
+                <button className="reset-button" type="submit" disabled={isLoading}>
                   {isLoading ? 'Updating...' : 'Update Password'}
                 </button>
               </form>
