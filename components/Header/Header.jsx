@@ -95,10 +95,16 @@ const Header = ({ forceSolid = false }) => {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+  
+    // Ensure everything is fully cleared
+    localStorage.clear();
+    sessionStorage.clear();
     setProfileDropdownOpen(false);
-    window.location.reload();
-  };
+  
+    // Force a full page reload to kill Supabase in-memory session
+    window.location.href = '/login';
+  };  
 
   const handleProfileIconClick = (e) => {
     e.stopPropagation();
