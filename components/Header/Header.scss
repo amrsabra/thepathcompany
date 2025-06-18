@@ -280,6 +280,85 @@
           display: block;
           position: relative;
         }
+
+        .profile-dropdown-container {
+          position: relative;
+
+          .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.15);
+              border-color: rgba(255, 255, 255, 0.2);
+            }
+          }
+
+          .profile-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            background: rgba(23, 23, 33, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem;
+            min-width: 200px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+
+            .profile-email {
+              color: rgba(255, 255, 255, 0.7);
+              font-size: 0.875rem;
+              padding: 0.5rem 0;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+              margin-bottom: 0.5rem;
+            }
+
+            .profile-link {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              color: white;
+              text-decoration: none;
+              padding: 0.5rem 0;
+              font-size: 0.875rem;
+              transition: all 0.2s ease;
+
+              &:hover {
+                color: #872B97;
+              }
+            }
+
+            .logout-btn {
+              width: 100%;
+              background: transparent;
+              border: 1px solid rgba(255, 107, 107, 0.3);
+              color: #ff6b6b;
+              padding: 0.5rem 1rem;
+              border-radius: 8px;
+              font-size: 0.875rem;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              margin-top: 0.5rem;
+
+              &:hover {
+                background: rgba(255, 107, 107, 0.1);
+                border-color: rgba(255, 107, 107, 0.5);
+              }
+            }
+          }
+        }
       }
     }
 
@@ -575,6 +654,85 @@
 
         &:active {
           transform: scale(0.98);
+        }
+      }
+
+      .profile-dropdown-container {
+        position: relative;
+
+        .profile-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+          }
+        }
+
+        .profile-dropdown-menu {
+          position: absolute;
+          top: calc(100% + 0.5rem);
+          right: 0;
+          background: rgba(23, 23, 33, 0.98);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 1rem;
+          min-width: 200px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          z-index: 1000;
+
+          .profile-email {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.5rem;
+          }
+
+          .profile-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+
+            &:hover {
+              color: #872B97;
+            }
+          }
+
+          .logout-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            color: #ff6b6b;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+
+            &:hover {
+              background: rgba(255, 107, 107, 0.1);
+              border-color: rgba(255, 107, 107, 0.5);
+            }
+          }
         }
       }
     }

@@ -125,6 +125,10 @@ const Header = ({ forceSolid = false }) => {
                 {profileDropdownOpen && (
                   <div className="profile-dropdown-menu">
                     <div className="profile-email">{userSession.user.email}</div>
+                    <Link href="/profile" className="profile-link">
+                      <FiUser size={16} />
+                      Profile
+                    </Link>
                     <button className="logout-btn" onClick={handleLogout}>Log Out</button>
                   </div>
                 )}

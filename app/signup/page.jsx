@@ -115,19 +115,20 @@ const handleGoogleSignUp = async () => {
 };
 
 useEffect(() => {
-  const insertGoogleProfileIfNeeded = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) return;
+  const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    async (event, session) => {
+      if (event !== 'SIGNED_IN' || !session?.user) return;
 
-    const { data: existingProfile, error: profileFetchError } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', session.user.id)
-      .maybeSingle();
+      const user = session.user;
 
-      if (!existingProfile) {
-        const { user } = session;
-      
+      // Check if profile already exists
+      const { data: existingProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!existingProfile && !profileError) {
         const { error: insertError } = await supabase.from('profiles').insert([{
           id: user.id,
           username: user.user_metadata.full_name || user.email.split('@')[0],
@@ -136,18 +137,21 @@ useEffect(() => {
           date_of_birth: null,
           stripe_customer: null,
         }]);
-      
-        if (insertError) {
-          console.error('Error inserting Google user into profiles table:', insertError);
-        } else {
-          console.log('Google user successfully added to profiles table.');
-        }
-      }
-      
-  };
 
-  insertGoogleProfileIfNeeded();
+        if (insertError) {
+          console.error('❌ Failed to insert Google user into profiles:', insertError);
+        } else {
+          console.log('✅ Google user inserted into profiles.');
+        }
+      } else {
+        console.log('ℹ️ Google user already exists in profiles.');
+      }
+    }
+  );
+
+  return () => subscription.unsubscribe();
 }, []);
+
 
 
   const handleSubmit = async (e) => {

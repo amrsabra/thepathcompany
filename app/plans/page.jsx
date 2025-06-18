@@ -27,21 +27,18 @@ const SubscriptionPlans = () => {
   useEffect(() => {
     const createProfile = async () => {
       try {
-        // Get the current user
         const { data: { user } } = await supabase.auth.getUser();
-        
+
         if (!user) {
-          // No user signed in — skip profile creation
           setIsLoading(false);
           return;
-        }        
-        // Get pending profile data from localStorage
+        }
+
         const pendingProfile = localStorage.getItem('pendingProfile');
-        
+
         if (pendingProfile) {
           const profileData = JSON.parse(pendingProfile);
-          
-          // Create profile in the database with subscription set to false
+
           const { error } = await supabase
             .from('profiles')
             .insert([
@@ -49,16 +46,41 @@ const SubscriptionPlans = () => {
                 id: user.id,
                 email: user.email,
                 ...profileData,
-                subscription: false, // Set subscription status to false by default
+                subscription: false,
                 created_at: new Date().toISOString(),
               }
             ]);
 
           if (error) {
-            console.error('Error creating profile:', error);
+            console.error('Error creating profile from pending:', error);
           } else {
-            // Clear the pending profile data
             localStorage.removeItem('pendingProfile');
+          }
+        } else {
+          // Google sign-in fallback
+          const { data: existingProfile, error: fetchError } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', user.id)
+            .maybeSingle();
+
+          if (!existingProfile) {
+            const { error: insertError } = await supabase.from('profiles').insert([
+              {
+                id: user.id,
+                email: user.email,
+                username: user.user_metadata.full_name || user.email.split('@')[0],
+                first_name: user.user_metadata.full_name?.split(' ')[0] || user.email.split('@')[0],
+                last_name: user.user_metadata.full_name?.split(' ').slice(1).join(' ') || '',                
+                date_of_birth: null,
+                subscription: false,
+                created_at: new Date().toISOString(),
+              }
+            ]);
+
+            if (insertError) {
+              console.error('Error inserting Google user profile:', insertError);
+            }
           }
         }
       } catch (error) {
@@ -215,4 +237,4 @@ const SubscriptionPlans = () => {
   );
 };
 
-export default SubscriptionPlans; 
+export default SubscriptionPlans;
