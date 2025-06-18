@@ -106,15 +106,6 @@ const Header = ({ forceSolid = false }) => {
           <button className="nav-button" onClick={handleViewPlans}>View Plans</button>
         </div>
         <div className="right-section">
-          <form className="search-form" onSubmit={handleSearch}>
-            <FiSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search courses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </form>
           <div className="vertical-separator" />
           <div className="auth-buttons">
             {userSession && userSession.user && userSession.user.email_confirmed_at ? (

@@ -7,6 +7,7 @@ import CourseSlider from './CourseSlider';
 import MembershipBenefits from './MembershipBenefits';
 import ComingSoonSlider from './ComingSoonSlider';
 import Header from './Header/Header';
+import Footer from './Footer';
 import '../styles/homepage.scss';
 import '../styles/course-slider.scss';
 import '../styles/membership-benefits.scss';
@@ -91,6 +92,7 @@ const Homepage = () => {
           <PersonalizationFlow onComplete={handlePersonalizationComplete} />
         )}
       </div>
+      <Footer />
     </>
   );
 };
