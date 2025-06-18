@@ -18,7 +18,7 @@ const Footer = () => {
           <div className="footer__brand">
             <div className="footer__logo">
               {/* Replace with your actual logo */}
-              <span className="gradient-text">ProjectX2</span>
+              <span className="gradient-text">The Path Company</span>
             </div>
             <p className="footer__slogan">
               Elevate your skills with expert-led courses and real-world projects

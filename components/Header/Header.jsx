@@ -103,9 +103,18 @@ const Header = ({ forceSolid = false }) => {
         </div>
         <div className="left-section">
           <button className="browse-button" onClick={() => router.push('/campuses')}>Explore Campuses</button>
-          <button className="nav-button" onClick={handleViewPlans}>View Plans</button>
+          <button className="nav-button" onClick={handleViewPlans}>Join TPC</button>
         </div>
         <div className="right-section">
+          <form className="search-form" onSubmit={handleSearch}>
+            <FiSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
           <div className="vertical-separator" />
           <div className="auth-buttons">
             {userSession && userSession.user && userSession.user.email_confirmed_at ? (
