@@ -40,6 +40,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -98,19 +99,37 @@ const SignUp = () => {
   };
 
 const handleGoogleSignUp = async () => {
-  setIsLoading(true);
+  console.log('Google signup button clicked');
+  setIsGoogleLoading(true);
+  setErrors({});
 
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: `${window.location.origin}/plans`,
-    },
-  });
+  try {
+    console.log('Initiating Google OAuth for signup...');
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/plans`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      },
+    });
 
-  if (error) {
-    console.error("Google sign-in error:", error.message);
-    setErrors({ submit: 'Google sign-in failed. Please try again.' });
-    setIsLoading(false);
+    console.log('OAuth response:', { data, error });
+
+    if (error) {
+      console.error("Google sign-in error:", error.message);
+      setErrors({ google: `Google sign-in failed: ${error.message}` });
+    } else if (data) {
+      console.log('OAuth successful, redirecting...');
+      // The redirect should happen automatically
+    }
+  } catch (err) {
+    console.error('Google signup error:', err);
+    setErrors({ google: `Something went wrong: ${err.message}` });
+  } finally {
+    setIsGoogleLoading(false);
   }
 };
 
@@ -270,10 +289,16 @@ useEffect(() => {
             <p>Join our community and start your journey</p>
           </div>
           <div className="social-signup">
-            <button type="button" className="social-button" onClick={handleGoogleSignUp}>
+            <button 
+              type="button" 
+              className="social-button" 
+              onClick={handleGoogleSignUp}
+              disabled={isGoogleLoading}
+            >
               <FcGoogle size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-              Continue with Google
+              {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
             </button>
+            {errors.google && <span className="error-message">{errors.google}</span>}
           </div>
           <div className="divider">
             <span>or continue with email</span>

@@ -17,6 +17,7 @@ const Login = () => {
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,6 +28,18 @@ const Login = () => {
       }
     };
     redirectIfLoggedIn();
+  }, [router]);
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const handleAuthCallback = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (session?.user && !error) {
+        router.push('/');
+      }
+    };
+
+    handleAuthCallback();
   }, [router]);
 
   const handleChange = (e) => {
@@ -83,17 +96,37 @@ const Login = () => {
   };
 
   const handleGoogleLogin = async () => {
+    console.log('Google login button clicked');
+    setIsGoogleLoading(true);
+    setErrors({});
+    
     try {
+      console.log('Initiating Google OAuth...');
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/` // redirect to home or dashboard
+          redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
         }
       });
-      if (error) throw error;
+      
+      console.log('OAuth response:', { data, error });
+      
+      if (error) {
+        console.error('Google OAuth error:', error);
+        setErrors({ google: `Google login failed: ${error.message}` });
+      } else if (data) {
+        console.log('OAuth successful, redirecting...');
+        // The redirect should happen automatically
+      }
     } catch (err) {
       console.error('Google login error:', err);
-      alert('Google login failed. Please try again.');
+      setErrors({ google: `Something went wrong: ${err.message}` });
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -108,10 +141,16 @@ const Login = () => {
           </div>
 
           <div className="social-login">
-            <button type="button" className="social-button google" onClick={handleGoogleLogin}>
+            <button 
+              type="button" 
+              className="social-button google" 
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading}
+            >
               <FcGoogle size={20} />
-              <span>Continue with Google</span>
+              <span>{isGoogleLoading ? 'Connecting...' : 'Continue with Google'}</span>
             </button>
+            {errors.google && <span className="error-message">{errors.google}</span>}
           </div>
 
           <div className="divider">

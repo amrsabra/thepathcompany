@@ -382,6 +382,10 @@
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
+      position: relative;
+      z-index: 10;
+      pointer-events: auto;
+      user-select: none;
 
       &:hover {
         background: rgba(255, 255, 255, 0.08);
@@ -389,8 +393,20 @@
         transform: translateY(-1px);
       }
 
+      &:active {
+        transform: translateY(0);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
       span {
         margin-top: 1px;
+        pointer-events: none;
       }
     }
   }
