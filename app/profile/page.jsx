@@ -2,15 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  FiUser, 
-  FiMail, 
-  FiCalendar, 
-  FiMapPin, 
-  FiEdit3, 
-  FiSave, 
+import {
+  FiUser,
+  FiEdit3,
+  FiSave,
   FiX,
-  FiCamera,
+  FiRefreshCw,
   FiShield,
   FiBook,
   FiAward,
@@ -23,47 +20,78 @@ import Header from '../../components/Header/Header';
 import { supabase } from '../../supabaseClient';
 import '../../styles/profile.scss';
 
+// 🔄 Avatar generator
+const generateDicebearAvatar = (seed, style = 'adventurer') => {
+  const hashedSeed = seed.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return `https://api.dicebear.com/7.x/${style}/svg?seed=${hashedSeed}`;
+};
+
 const Profile = () => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
   const [profileData, setProfileData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    bio: '',
     location: '',
-    website: '',
-    avatar: null
+    avatar: null,
+    username: ''
   });
   const [userPosition, setUserPosition] = useState(0);
 
-  // Function to get user's position in database
   const getUserPosition = async (userId) => {
     try {
-      // Fetch all users ordered by creation date
       const { data: allUsers, error } = await supabase
         .from('profiles')
         .select('id')
         .order('created_at', { ascending: true });
-  
+
       if (error) {
         console.error('Error fetching user list:', error);
         return 0;
       }
-  
-      // Find the index of the current user
+
       const index = allUsers.findIndex(user => user.id === userId);
-      
-      // Return 1-based position
       return index >= 0 ? index + 1 : 0;
     } catch (error) {
       console.error('Error calculating user position:', error);
       return 0;
     }
   };
+
+  const generateRandomAvatar = async () => {
+    const seed = Math.random().toString(36).substring(2); // random string
+    const avatarUrl = `https://api.dicebear.com/7.x/fun-emoji/svg?seed=${seed}`;
   
+    setProfileData(prev => ({
+      ...prev,
+      avatar: avatarUrl,
+    }));
+  };  
+
+  const fetchUserProfile = async (userId) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const checkUser = async () => {
@@ -72,22 +100,27 @@ const Profile = () => {
         router.push('/login');
         return;
       }
-      
+
       setUser(session.user);
+
+      const profileFromDB = await fetchUserProfile(session.user.id);
+
+      const defaultAvatar = generateDicebearAvatar(
+        profileFromDB?.username || session.user.email
+      );
+
       setProfileData({
-        firstName: session.user.user_metadata?.firstName || '',
-        lastName: session.user.user_metadata?.lastName || '',
+        firstName: profileFromDB?.first_name || '',
+        lastName: profileFromDB?.last_name || '',
         email: session.user.email || '',
-        bio: session.user.user_metadata?.bio || '',
-        location: session.user.user_metadata?.location || '',
-        website: session.user.user_metadata?.website || '',
-        avatar: session.user.user_metadata?.avatar || null
+        location: profileFromDB?.location || '',
+        avatar: profileFromDB?.avatar || defaultAvatar,
+        username: profileFromDB?.username || ''
       });
 
-      // Get user's position in database
-      const position = await getUserPosition(session.user.id, session.user.created_at);
+      const position = await getUserPosition(session.user.id);
       setUserPosition(position);
-      
+
       setIsLoading(false);
     };
 
@@ -95,31 +128,56 @@ const Profile = () => {
   }, [router]);
 
   const handleSave = async () => {
+    setIsSaving(true);
+    setSaveMessage('');
+
     try {
-      const { error } = await supabase.auth.updateUser({
+      const { error: authError } = await supabase.auth.updateUser({
         data: {
           firstName: profileData.firstName,
           lastName: profileData.lastName,
-          bio: profileData.bio,
           location: profileData.location,
-          website: profileData.website,
           avatar: profileData.avatar
         }
       });
 
-      if (error) throw error;
-      
+      if (authError) throw authError;
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          first_name: profileData.firstName,
+          last_name: profileData.lastName,
+          location: profileData.location,
+          avatar: profileData.avatar,
+          username: profileData.username,
+          updated_info_at: new Date().toISOString()
+        });
+
+      if (profileError) throw profileError;
+
+      setSaveMessage('Profile updated successfully!');
       setIsEditing(false);
-      // Update local user state
+
       setUser(prev => ({
         ...prev,
         user_metadata: {
           ...prev.user_metadata,
-          ...profileData
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          location: profileData.location,
+          avatar: profileData.avatar
         }
       }));
+
+      setTimeout(() => setSaveMessage(''), 3000);
     } catch (error) {
       console.error('Error updating profile:', error);
+      setSaveMessage(`Error updating profile: ${error.message}`);
+      setTimeout(() => setSaveMessage(''), 5000);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -144,7 +202,6 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <Header forceSolid={true} />
-      
       <div className="profile-container">
         <div className="profile-header">
           <h1>Profile</h1>
@@ -164,12 +221,17 @@ const Profile = () => {
                     <FiUser size={48} />
                   </div>
                 )}
-                <button className="avatar-edit-btn">
-                  <FiCamera size={16} />
+                <button
+                  className="avatar-edit-btn"
+                  onClick={generateRandomAvatar}
+                  title="Generate new avatar"
+                >
+                  <FiRefreshCw size={16} />
                 </button>
               </div>
               <div className="avatar-info">
                 <h2>{profileData.firstName} {profileData.lastName}</h2>
+                <p className="username">@{profileData.username || user?.email?.split('@')[0] || 'user'}</p>
                 <p className="member-since">Member since {new Date(user?.created_at).toLocaleDateString()}</p>
                 <div className="user-id">#{userPosition}</div>
               </div>
@@ -177,29 +239,22 @@ const Profile = () => {
 
             <div className="profile-actions">
               {!isEditing ? (
-                <button 
-                  className="edit-btn"
-                  onClick={() => setIsEditing(true)}
-                >
-                  <FiEdit3 size={16} />
-                  Edit Profile
+                <button className="edit-btn" onClick={() => setIsEditing(true)}>
+                  <FiEdit3 size={16} /> Edit Profile
                 </button>
               ) : (
                 <div className="edit-actions">
-                  <button 
-                    className="save-btn"
-                    onClick={handleSave}
-                  >
-                    <FiSave size={16} />
-                    Save
+                  <button className="save-btn" onClick={handleSave} disabled={isSaving}>
+                    <FiSave size={16} /> {isSaving ? 'Saving...' : 'Save'}
                   </button>
-                  <button 
-                    className="cancel-btn"
-                    onClick={() => setIsEditing(false)}
-                  >
-                    <FiX size={16} />
-                    Cancel
+                  <button className="cancel-btn" onClick={() => setIsEditing(false)} disabled={isSaving}>
+                    <FiX size={16} /> Cancel
                   </button>
+                </div>
+              )}
+              {saveMessage && (
+                <div className={`save-message ${saveMessage.includes('Error') ? 'error' : 'success'}`}>
+                  {saveMessage}
                 </div>
               )}
             </div>
@@ -235,10 +290,21 @@ const Profile = () => {
                   <input
                     type="email"
                     value={profileData.email}
-                    disabled={true}
+                    disabled
                     placeholder="Your email address"
                   />
                   <small>Email cannot be changed</small>
+                </div>
+                <div className="form-group">
+                  <label>Username</label>
+                  <input
+                    type="text"
+                    value={profileData.username}
+                    onChange={(e) => setProfileData(prev => ({ ...prev, username: e.target.value }))}
+                    disabled={!isEditing}
+                    placeholder="Enter your username"
+                  />
+                  <small>This will be your unique identifier</small>
                 </div>
                 <div className="form-group">
                   <label>Location</label>
@@ -248,26 +314,6 @@ const Profile = () => {
                     onChange={(e) => setProfileData(prev => ({ ...prev, location: e.target.value }))}
                     disabled={!isEditing}
                     placeholder="City, Country"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Website</label>
-                  <input
-                    type="url"
-                    value={profileData.website}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, website: e.target.value }))}
-                    disabled={!isEditing}
-                    placeholder="https://yourwebsite.com"
-                  />
-                </div>
-                <div className="form-group full-width">
-                  <label>Bio</label>
-                  <textarea
-                    value={profileData.bio}
-                    onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
-                    disabled={!isEditing}
-                    placeholder="Tell us about yourself..."
-                    rows={4}
                   />
                 </div>
               </div>
@@ -354,10 +400,7 @@ const Profile = () => {
                       <p>Sign out of your account</p>
                     </div>
                   </div>
-                  <button 
-                    className="setting-btn danger"
-                    onClick={handleLogout}
-                  >
+                  <button className="setting-btn danger" onClick={handleLogout}>
                     Sign Out
                   </button>
                 </div>
@@ -370,4 +413,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;
