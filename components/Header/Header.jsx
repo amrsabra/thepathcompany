@@ -1,3 +1,4 @@
+// ✅ Updated Header.jsx — Investigate `forceSolid` not triggering visual change
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -18,26 +19,31 @@ const categories = [
 ];
 
 const Header = ({ forceSolid = false }) => {
+  const [isScrolled, setIsScrolled] = useState(forceSolid);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [language, setLanguage] = useState('en'); // 'en' or 'ar'
-  const [isScrolled, setIsScrolled] = useState(forceSolid);
+  const [language, setLanguage] = useState('en');
   const router = useRouter();
   const [userSession, setUserSession] = useState(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
+  // ✅ Ensure isScrolled reflects the passed forceSolid prop
   useEffect(() => {
-    if (!forceSolid) {
-      const handleScroll = () => {
-        const scrollPosition = window.scrollY;
-        setIsScrolled(scrollPosition > 100); // Change header after 100px scroll
-      };
-
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
+    setIsScrolled(forceSolid);
   }, [forceSolid]);
+
+  useEffect(() => {
+    if (forceSolid) return; // Skip if forceSolid is forcing solid header
+  
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+  
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [forceSolid]);
+  
 
   useEffect(() => {
     const getSession = async () => {
@@ -51,11 +57,9 @@ const Header = ({ forceSolid = false }) => {
     return () => { listener?.subscription?.unsubscribe(); };
   }, []);
 
-  // Close dropdown on outside click
   useEffect(() => {
     if (!profileDropdownOpen) return;
     const handleClick = (e) => {
-      // Only close if click is outside the dropdown and icon
       if (!e.target.closest('.profile-dropdown-container')) {
         setProfileDropdownOpen(false);
       }
@@ -69,50 +73,24 @@ const Header = ({ forceSolid = false }) => {
     setTimeout(() => {
       setIsDropdownOpen(false);
       setIsClosing(false);
-    }, 200); // Match the transition duration in SCSS
-  };
-
-  const toggleDropdown = () => {
-    if (isDropdownOpen) {
-      closeDropdown();
-    } else {
-      setIsDropdownOpen(true);
-    }
-  };
-
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'ar' : 'en');
+    }, 200);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Implement search functionality
     console.log('Searching for:', searchQuery);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    localStorage.clear();
+    sessionStorage.clear();
+    setProfileDropdownOpen(false);
+    window.location.href = '/login';
   };
 
   const handleViewPlans = () => {
     router.push('/plans');
-  };
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-  
-    // Ensure everything is fully cleared
-    localStorage.clear();
-    sessionStorage.clear();
-    setProfileDropdownOpen(false);
-  
-    // Force a full page reload to kill Supabase in-memory session
-    window.location.href = '/login';
-  };  
-
-  const handleProfileIconClick = (e) => {
-    e.stopPropagation();
-    setProfileDropdownOpen(v => !v);
-  };
-
-  const handleDropdownClick = (e) => {
-    e.stopPropagation();
   };
 
   return (
@@ -124,21 +102,9 @@ const Header = ({ forceSolid = false }) => {
           </a>
         </div>
         <div className="left-section">
-          <button 
-            className="browse-button"
-            onClick={() => router.push('/campuses')}
-          >
-            Explore Campuses
-          </button>
+          <button className="browse-button" onClick={() => router.push('/campuses')}>Explore Campuses</button>
           <button className="nav-button" onClick={handleViewPlans}>View Plans</button>
-
-          {isScrolled && (
-            <div className="nav-buttons">
-              <button className="nav-button" onClick={handleViewPlans}>View Plans</button>
-            </div>
-          )}
         </div>
-
         <div className="right-section">
           <form className="search-form" onSubmit={handleSearch}>
             <FiSearch className="search-icon" />
@@ -153,11 +119,11 @@ const Header = ({ forceSolid = false }) => {
           <div className="auth-buttons">
             {userSession && userSession.user && userSession.user.email_confirmed_at ? (
               <div className="profile-dropdown-container">
-                <div className="profile-icon" title={userSession.user.email} onClick={handleProfileIconClick} tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') handleProfileIconClick(e); }} aria-haspopup="true" aria-expanded={profileDropdownOpen}>
+                <div className="profile-icon" title={userSession.user.email} onClick={() => setProfileDropdownOpen(prev => !prev)}>
                   <FiUser size={22} />
                 </div>
                 {profileDropdownOpen && (
-                  <div className="profile-dropdown-menu" onClick={handleDropdownClick} tabIndex={-1}>
+                  <div className="profile-dropdown-menu">
                     <div className="profile-email">{userSession.user.email}</div>
                     <button className="logout-btn" onClick={handleLogout}>Log Out</button>
                   </div>
@@ -172,7 +138,7 @@ const Header = ({ forceSolid = false }) => {
           </div>
           <button 
             className={`lang-switch ${language}`}
-            onClick={toggleLanguage}
+            onClick={() => setLanguage(prev => (prev === 'en' ? 'ar' : 'en'))}
           >
             <span className="lang-option en">EN</span>
             <span className="lang-option ar">ع</span>
@@ -180,31 +146,8 @@ const Header = ({ forceSolid = false }) => {
           </button>
         </div>
       </nav>
-
-      {(isDropdownOpen || isClosing) && (
-        <div 
-          className={`dropdown-menu ${isClosing ? 'closing' : ''}`}
-          onMouseLeave={closeDropdown}
-        >
-          <div className="menu-header">Browse Categories</div>
-          <div className="menu-content">
-            {categories.map(category => (
-              <a key={category.id} href="#" className="category">
-                {category.name}
-                <span></span>
-              </a>
-            ))}
-          </div>
-          <div className="menu-footer">
-            <a href="#" className="view-all-button">
-              View All Categories
-              <FiChevronDown />
-            </a>
-          </div>
-        </div>
-      )}
     </header>
   );
 };
 
-export default Header; 
+export default Header;

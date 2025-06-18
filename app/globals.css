@@ -1,42 +1,41 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
+/* Basic Reset */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
+/* Global scroll and font settings */
+html, body {
+  height: 100%;
+  scroll-behavior: smooth;
+  font-family: var(--font-inter, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ⚠️ DO NOT set background or color here unless needed */
+body {
+  /* Only add background if you want a specific fallback */
+  /* background: #0e0e10; or transparent */
+  color: white; /* Or inherit */
+  background-color: transparent; /* Let SCSS take over */
+}
+
+/* Optional: Links & buttons */
 a {
-  color: inherit;
   text-decoration: none;
+  color: inherit;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+input, button, textarea, select {
+  font: inherit;
 }
