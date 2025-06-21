@@ -12,7 +12,21 @@ import {
   FiLock,
   FiShield,
   FiHelpCircle,
-  FiChevronDown
+  FiChevronDown,
+  FiPlay,
+  FiDownload,
+  FiAward,
+  FiHeadphones,
+  FiWifi,
+  FiZap,
+  FiGlobe,
+  FiTrendingUp,
+  FiCalendar,
+  FiMessageCircle,
+  FiVideo,
+  FiFileText,
+  FiTarget,
+  FiGift
 } from 'react-icons/fi';
 import Header from '../../components/Header/Header';
 import '../../styles/subscription-plans.scss';
@@ -21,6 +35,7 @@ import { useRouter } from 'next/navigation';
 
 const SubscriptionPlans = () => {
   const [openFaq, setOpenFaq] = useState(null);
+  const [billingCycle, setBillingCycle] = useState('monthly');
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -97,85 +112,60 @@ const SubscriptionPlans = () => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  const plans = [
-    {
-      id: 'basic',
-      name: 'Basic',
-      price: '$11',
-      period: 'per month',
-      description: 'Perfect for beginners who want to start their learning journey',
-      features: [
-        { text: 'Access to all courses', included: true },
-        { text: 'Downloadable resources', included: true },
-        { text: 'Certificate of completion', included: true },
-        { text: 'Priority support', included: false },
-        { text: 'Offline access', included: false },
-        { text: 'Advanced courses', included: false }
-      ],
-      popular: false,
-      icon: <FiBook />
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: '$19',
-      period: 'per month',
-      description: 'Ideal for serious learners who want to accelerate their growth',
-      features: [
-        { text: 'Access to all courses', included: true },
-        { text: 'Downloadable resources', included: true },
-        { text: 'Certificate of completion', included: true },
-        { text: 'Priority support', included: true },
-        { text: 'Offline access', included: true },
-        { text: 'Advanced courses', included: false }
-      ],
-      popular: true,
-      icon: <FiStar />
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise',
-      price: '$29',
-      period: 'per month',
-      description: 'For organizations and teams looking to upskill together',
-      features: [
-        { text: 'Access to all courses', included: true },
-        { text: 'Downloadable resources', included: true },
-        { text: 'Certificate of completion', included: true },
-        { text: 'Priority support', included: true },
-        { text: 'Offline access', included: true },
-        { text: 'Advanced courses', included: true }
-      ],
-      popular: false,
-      icon: <FiUsers />
-    }
-  ];
+  const plan = {
+    id: 'premium',
+    name: 'TPC Premium',
+    price: { monthly: 19, yearly: 179 },
+    period: billingCycle === 'yearly' ? 'per year' : 'per month',
+    description: 'Complete access to our entire learning platform',
+    features: [
+      { text: '300+ Premium Courses', included: true, icon: <FiBook />, highlight: true },
+      { text: 'Download & Offline Access', included: true, icon: <FiDownload />, highlight: true },
+      { text: 'Certificates & Badges', included: true, icon: <FiAward /> },
+      { text: 'Community & Networking', included: true, icon: <FiMessageCircle /> },
+      { text: 'Mobile & Desktop Apps', included: true, icon: <FiPlay /> },
+      { text: '24/7 Priority Support', included: true, icon: <FiHeadphones /> },
+      { text: 'AI Career Planning Tool', included: true, icon: <FiTarget /> },
+      { text: 'Live Expert Sessions', included: true, icon: <FiVideo /> }
+    ],
+    icon: <FiStar />,
+    color: 'purple'
+  };
 
   const paymentMethods = [
-    { name: 'Visa', icon: <FiCreditCard /> },
-    { name: 'Mastercard', icon: <FiCreditCard /> },
-    { name: 'PayPal', icon: <FiCreditCard /> },
-    { name: 'Apple Pay', icon: <FiCreditCard /> },
-    { name: 'Google Pay', icon: <FiCreditCard /> }
+    { name: 'Visa', icon: '/images/visa-logo.png' },
+    { name: 'Mastercard', icon: '/images/mastercard-logo.png' },
+    { name: 'American Express', icon: '/images/amex-logo.png' },
+    { name: 'PayPal', icon: <FiCreditCard /> }
   ];
 
   const faqQuestions = [
     {
-      question: 'Is my payment information secure?',
-      answer: 'Yes, we use industry-standard encryption and security measures to protect your payment information. All transactions are processed through secure payment gateways.',
+      question: 'Is my payment secure?',
+      answer: 'Yes, we use industry-standard encryption and secure payment gateways.',
       icon: <FiShield />
     },
     {
-      question: 'Can I change my plan later?',
-      answer: 'Absolutely! You can upgrade or downgrade your plan at any time. Changes will take effect at the start of your next billing cycle.',
+      question: 'Can I change billing cycle?',
+      answer: 'Yes, you can switch between monthly and yearly billing at any time.',
       icon: <FiHelpCircle />
     },
     {
-      question: 'What happens if I cancel my subscription?',
-      answer: 'You\'ll continue to have access to all features until the end of your current billing period. After that, you\'ll lose access to premium features.',
+      question: 'What if I cancel?',
+      answer: 'You\'ll have access until the end of your billing period.',
       icon: <FiLock />
     }
   ];
+
+  const getCurrentPrice = () => {
+    return billingCycle === 'yearly' ? plan.price.yearly : plan.price.monthly;
+  };
+
+  const getSavings = () => {
+    const monthlyTotal = plan.price.monthly * 12;
+    const yearlyPrice = plan.price.yearly;
+    return monthlyTotal - yearlyPrice;
+  };
 
   if (isLoading) {
     return (
@@ -194,43 +184,148 @@ const SubscriptionPlans = () => {
   return (
     <div className="subscription-plans-page">
       <Header forceSolid={true} />
-      <form className="plans-single-col-layout" autoComplete="off">
-        <div className="plans-left-col">
-          <div className="subscribe-header">
-            <h2>Subscribe to TPC Pro</h2>
-          </div>
-          <div className="price-section">
-            <div className="usd-price">
-              <span className="usd">US$</span>
-              <span className="amount">20</span>
-              <span className="per-month">Per Month</span>
+      
+      <div className="plans-container">
+        {/* Left Side - Plan Details */}
+        <div className="plans-left">
+          <motion.div
+            className="hero-section"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1>Unlock Your Full Learning Potential</h1>
+            <p>Get complete access to our entire learning platform with all premium features.</p>
+          </motion.div>
+
+          <motion.div
+            className="plan-card"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <div className="premium-badge">
+              <FiStar />
+              Premium Access
             </div>
-            <div className="recurring-pay-toggle">
-              <span className="checkmark">✓</span> recurring pay
+            
+            <div className="plan-header">
+              <div className={`plan-icon ${plan.color}`}>
+                {plan.icon}
+              </div>
+              <h3>{plan.name}</h3>
+              <div className="plan-price">
+                <span className="price">${getCurrentPrice()}</span>
+                <span className="period">/{billingCycle === 'yearly' ? 'year' : 'month'}</span>
+              </div>
+              {billingCycle === 'yearly' && (
+                <div className="yearly-savings">
+                  Save ${getSavings()}
+                </div>
+              )}
+              <p className="plan-description">{plan.description}</p>
             </div>
-            <div className="plan-buttons">
-              <button type="button" className="plan-btn selected">Monthly | $20</button>
-              <button type="button" className="plan-btn">Yearly | $200</button>
+
+            <div className="plan-features">
+              {plan.features.map((feature, featureIndex) => (
+                <div key={featureIndex} className={`feature-item ${feature.highlight ? 'highlight' : ''}`}>
+                  <div className="feature-icon">
+                    <FiCheck />
+                  </div>
+                  <span className="feature-text">{feature.text}</span>
+                  {feature.highlight && <div className="feature-sparkle">✨</div>}
+                </div>
+              ))}
             </div>
-          </div>
-          <button className="pay-subscribe-btn" type="submit">Pay and subscribe</button>
-          <div className="powered-by-stripe">
-            Powered by <span className="stripe-logo">stripe</span>
-            <span className="stripe-links">
-              <a href="#">Terms</a> <a href="#">Privacy</a>
-            </span>
-          </div>
+          </motion.div>
         </div>
-      </form>
-      <div className="secure-payment-section">
-        <div className="secure-payment-box">
-          <span className="lock-icon"><FiLock /></span>
-          <span>Secure payment...</span>
-          <div className="payment-methods-row">
-            <img src="/images/visa-logo.png" alt="Visa" />
-            <img src="/images/mastercard-logo.png" alt="Mastercard" />
-            <img src="/images/amex-logo.png" alt="American Express" />
-          </div>
+
+        {/* Right Side - Billing & Payment */}
+        <div className="plans-right">
+          <motion.div
+            className="billing-section"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <h2>Choose Your Billing</h2>
+            
+            <div className="billing-toggle">
+              <button
+                className={`billing-option ${billingCycle === 'monthly' ? 'active' : ''}`}
+                onClick={() => setBillingCycle('monthly')}
+              >
+                <span>Monthly</span>
+              </button>
+              <button
+                className={`toggle-switch ${billingCycle === 'yearly' ? 'active' : ''}`}
+                onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+                aria-label="Toggle billing cycle"
+              >
+                <div className="toggle-slider"></div>
+              </button>
+              <button
+                className={`billing-option ${billingCycle === 'yearly' ? 'active' : ''}`}
+                onClick={() => setBillingCycle('yearly')}
+              >
+                <span>Yearly</span>
+                {billingCycle === 'yearly' && <span className="save-badge">Save ${getSavings()}</span>}
+              </button>
+            </div>
+
+            <button className="subscribe-btn">
+              <FiZap />
+              Get Premium Access
+            </button>
+
+            <div className="faq-section">
+              <h3>Quick Questions</h3>
+              <div className="faq-list">
+                {faqQuestions.map((faq, index) => (
+                  <div
+                    key={index}
+                    className={`faq-item ${openFaq === index ? 'active' : ''}`}
+                    onClick={() => toggleFaq(index)}
+                  >
+                    <div className="faq-question">
+                      <div className="faq-icon">{faq.icon}</div>
+                      <span>{faq.question}</span>
+                      <FiChevronDown className={`chevron ${openFaq === index ? 'active' : ''}`} />
+                    </div>
+                    <AnimatePresence>
+                      {openFaq === index && (
+                        <motion.div
+                          className="faq-answer"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                        >
+                          <p>{faq.answer}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="payment-methods">
+              <h3>Secure Payment</h3>
+              <div className="payment-grid">
+                {paymentMethods.map((method, index) => (
+                  <div key={index} className="payment-method">
+                    {typeof method.icon === 'string' ? (
+                      <img src={method.icon} alt={method.name} />
+                    ) : (
+                      <div className="payment-icon">{method.icon}</div>
+                    )}
+                    <span>{method.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
