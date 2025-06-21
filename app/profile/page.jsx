@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import debounce from 'lodash.debounce';
 import { useRouter } from 'next/navigation';
 import {
   FiUser,
@@ -38,6 +40,7 @@ const Profile = () => {
     lastName: '',
     email: '',
     location: '',
+    phone_number: '',
     avatar: null,
     username: ''
   });
@@ -114,6 +117,7 @@ const Profile = () => {
         lastName: profileFromDB?.last_name || '',
         email: session.user.email || '',
         location: profileFromDB?.location || '',
+        phone_number: profileFromDB?.phone_number || '',
         avatar: profileFromDB?.avatar || defaultAvatar,
         username: profileFromDB?.username || ''
       });
@@ -137,6 +141,7 @@ const Profile = () => {
           firstName: profileData.firstName,
           lastName: profileData.lastName,
           location: profileData.location,
+          phone_number: profileData.phone_number,
           avatar: profileData.avatar
         }
       });
@@ -150,6 +155,7 @@ const Profile = () => {
           first_name: profileData.firstName,
           last_name: profileData.lastName,
           location: profileData.location,
+          phone_number: profileData.phone_number,
           avatar: profileData.avatar,
           username: profileData.username,
           updated_info_at: new Date().toISOString()
@@ -167,6 +173,7 @@ const Profile = () => {
           firstName: profileData.firstName,
           lastName: profileData.lastName,
           location: profileData.location,
+          phone_number: profileData.phone_number,
           avatar: profileData.avatar
         }
       }));
@@ -286,16 +293,6 @@ const Profile = () => {
                   />
                 </div>
                 <div className="form-group full-width">
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    value={profileData.email}
-                    disabled
-                    placeholder="Your email address"
-                  />
-                  <small>Email cannot be changed</small>
-                </div>
-                <div className="form-group">
                   <label>Username</label>
                   <input
                     type="text"
@@ -306,6 +303,16 @@ const Profile = () => {
                   />
                   <small>This will be your unique identifier</small>
                 </div>
+                <div className="form-group full-width">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={profileData.email}
+                    disabled
+                    placeholder="Your email address"
+                  />
+                  <small>Email cannot be changed</small>
+                </div>
                 <div className="form-group">
                   <label>Location</label>
                   <input
@@ -314,6 +321,16 @@ const Profile = () => {
                     onChange={(e) => setProfileData(prev => ({ ...prev, location: e.target.value }))}
                     disabled={!isEditing}
                     placeholder="City, Country"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <input
+                    type="text"
+                    value={profileData.phone_number}
+                    onChange={(e) => setProfileData(prev => ({ ...prev, phone_number: e.target.value }))}
+                    disabled={!isEditing}
+                    placeholder="Enter your phone number"
                   />
                 </div>
               </div>

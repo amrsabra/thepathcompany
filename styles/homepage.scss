@@ -315,6 +315,275 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
   }
 }
 
+// Testimonials Section
+.testimonials {
+  padding: $spacing-5xl 0;
+  background: rgba($background-dark, 0.9);
+
+  &__header {
+    text-align: center;
+    margin-bottom: $spacing-4xl;
+
+    .section-title {
+      margin-top: -50px;
+      font-size: $font-size-3xl;
+      margin-bottom: $spacing-lg;
+      background: $gradient-primary;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    .section-subtitle {
+      font-size: $font-size-lg;
+      color: rgba($light-text, 0.7);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: $spacing-2xl;
+    margin-bottom: $spacing-3xl;
+  }
+}
+
+.testimonial-card {
+  background: rgba($light-text, 0.03);
+  border: 1px solid rgba($light-text, 0.08);
+  border-radius: $border-radius-xl;
+  padding: $spacing-2xl;
+  backdrop-filter: blur(10px);
+  transition: $transition-base;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 4rem;
+    color: rgba($primary-accent, 0.3);
+    font-family: serif;
+  }
+
+  &:hover {
+    background: rgba($light-text, 0.05);
+    border-color: rgba($primary-accent, 0.3);
+    transform: $hover-transform;
+    box-shadow: $shadow-lg;
+  }
+
+  &__rating {
+    display: flex;
+    gap: 4px;
+    margin-bottom: $spacing-lg;
+
+    .star-icon {
+      color: #ffd700;
+      width: 20px;
+      height: 20px;
+      fill: #ffd700;
+    }
+  }
+
+  &__text {
+    font-size: $font-size-lg;
+    line-height: 1.6;
+    color: rgba($light-text, 0.9);
+    margin-bottom: $spacing-xl;
+    font-style: italic;
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &__avatar {
+    .avatar-placeholder {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $primary-accent, $main-cta);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: $font-size-lg;
+    }
+  }
+
+  &__info {
+    h4 {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      color: $light-text;
+      margin: 0 0 4px 0;
+    }
+
+    p {
+      font-size: $font-size-sm;
+      color: rgba($light-text, 0.6);
+      margin: 0;
+    }
+  }
+}
+
+// FAQ Section
+.faq-section {
+  padding: $spacing-5xl 0;
+  background: rgba($background-dark, 0.95);
+
+  &__header {
+    text-align: center;
+    margin-bottom: $spacing-4xl;
+
+    .section-title {
+      margin-top: -150px;
+      font-size: $font-size-3xl;
+      margin-bottom: $spacing-lg;
+      background: $gradient-primary;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    .section-subtitle {
+      font-size: $font-size-lg;
+      color: rgba($light-text, 0.7);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+
+  &__grid {
+    max-width: 800px;
+    margin: 0 auto $spacing-3xl auto;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  &__cta {
+    text-align: center;
+    padding: $spacing-3xl;
+    background: rgba($light-text, 0.03);
+    border: 1px solid rgba($light-text, 0.08);
+    border-radius: $border-radius-xl;
+    max-width: 500px;
+    margin: 0 auto;
+
+    p {
+      font-size: $font-size-lg;
+      color: rgba($light-text, 0.8);
+      margin-bottom: $spacing-lg;
+    }
+
+    .cta-button {
+      background: linear-gradient(135deg, $primary-accent, $main-cta);
+      border: none;
+      padding: $spacing-md $spacing-2xl;
+      font-size: $font-size-lg;
+      font-weight: 600;
+      color: white;
+      border-radius: $button-border-radius;
+      cursor: pointer;
+      transition: $transition-base;
+
+      &:hover {
+        transform: $hover-transform;
+        box-shadow: $shadow-md;
+      }
+    }
+  }
+}
+
+.faq-item {
+  background: rgba($light-text, 0.03);
+  border: 1px solid rgba($light-text, 0.08);
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  transition: $transition-base;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba($light-text, 0.05);
+    border-color: rgba($light-text, 0.12);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    background: rgba($light-text, 0.05);
+    border-color: $primary-accent;
+
+    .faq-item__question {
+      h3 {
+        color: $main-cta;
+      }
+
+      .chevron-icon {
+        transform: rotate(180deg);
+        color: $main-cta;
+      }
+    }
+
+    .faq-item__answer {
+      max-height: 500px;
+      opacity: 1;
+      padding: $spacing-xl;
+    }
+  }
+
+  &__question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-xl;
+    transition: $transition-base;
+
+    h3 {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      margin: 0;
+      transition: color 0.3s ease;
+      flex: 1;
+      padding-right: $spacing-lg;
+      color: $light-text;
+    }
+
+    .chevron-icon {
+      width: 24px;
+      height: 24px;
+      transition: $transition-base;
+      color: rgba($light-text, 0.5);
+      flex-shrink: 0;
+    }
+  }
+
+  &__answer {
+    max-height: 0;
+    opacity: 0;
+    padding: 0 $spacing-xl;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    p {
+      font-size: $font-size-base;
+      line-height: 1.6;
+      margin: 0;
+      color: rgba($light-text, 0.8);
+    }
+  }
+}
+
 // Responsive Design
 @media (max-width: map.get($breakpoints, 'md')) {
   .hero {
@@ -340,6 +609,59 @@ $cta-strip-clip: polygon(0 15%, 100% 0, 100% 85%, 0 100%);
 
     h2 {
       font-size: $font-size-2xl;
+    }
+  }
+
+  .testimonials {
+    padding: $spacing-3xl 0;
+
+    &__header {
+      .section-title {
+        font-size: $font-size-2xl;
+      }
+    }
+
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: $spacing-xl;
+    }
+  }
+
+  .faq-section {
+    padding: $spacing-3xl 0;
+
+    &__header {
+      .section-title {
+        font-size: $font-size-2xl;
+      }
+    }
+
+    &__grid {
+      gap: $spacing-sm;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .testimonial-card {
+    padding: $spacing-xl;
+
+    &__text {
+      font-size: $font-size-base;
+    }
+  }
+
+  .faq-item {
+    &__question {
+      padding: $spacing-lg;
+
+      h3 {
+        font-size: $font-size-base;
+      }
+    }
+
+    &__answer {
+      padding: 0 $spacing-lg;
     }
   }
 } 

@@ -70,25 +70,16 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Special CTA and Download */}
-          <div className="footer__cta">
-            <div className="footer__cta-card">
-              <h3 className="footer__cta-title">Produce a course with us</h3>
-              <p className="footer__cta-text">Share your expertise with our global audience</p>
-              <a href="/produce-course" className="footer__cta-button">Learn More</a>
-            </div>
-            
-            <div className="footer__download">
-              <h3 className="footer__heading">Get the app</h3>
-              <div className="footer__app-buttons">
-                <a href="#" className="footer__app-button">
-                  <FaApple /> <span>App Store</span>
-                  
-                </a>
-                <a href="#" className="footer__app-button">
-                  <FaGooglePlay /> <span>Google Play</span>
-                </a>
-              </div>
+          {/* Download Section */}
+          <div className="footer__download">
+            <h3 className="footer__heading">Get the app</h3>
+            <div className="footer__app-buttons">
+              <a href="#" className="footer__app-button">
+                <FaApple /> <span>App Store</span>
+              </a>
+              <a href="#" className="footer__app-button">
+                <FaGooglePlay /> <span>Google Play</span>
+              </a>
             </div>
           </div>
         </div>
@@ -97,7 +88,7 @@ const Footer = () => {
         
         <div className="footer__bottom">
           <p className="footer__copyright">
-            &copy; {currentYear} ProjectX2. All rights reserved.
+            &copy; {currentYear} The Path Company. All rights reserved.
           </p>
         </div>
       </div>
