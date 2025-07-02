@@ -427,9 +427,10 @@
         white-space: nowrap;
 
         &:hover {
-          background: rgba(255, 113, 48, 0.1);
-          border-color: #FF7130;
+          background: transparent;
+          border-color: #FF3C68;
           transform: translateY(-1px);
+          box-shadow: 0 0 0 1px rgba(255, 60, 104, 0.3);
         }
 
         &.active {
@@ -458,9 +459,10 @@
         white-space: nowrap;
 
         &:hover {
-          background: rgba(255, 113, 48, 0.1);
-          border-color: #FF7130;
+          background: transparent;
+          border-color: #FF3C68;
           transform: translateY(-1px);
+          box-shadow: 0 0 0 1px rgba(255, 60, 104, 0.3);
         }
 
         &.active {

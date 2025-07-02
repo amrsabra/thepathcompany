@@ -86,7 +86,7 @@ const Header = ({ forceSolid = false }) => {
     localStorage.clear();
     sessionStorage.clear();
     setProfileDropdownOpen(false);
-    window.location.href = '/login';
+    window.location.href = '/';
   };
 
   const handleViewPlans = () => {
@@ -103,7 +103,7 @@ const Header = ({ forceSolid = false }) => {
         </div>
         <div className="left-section">
           <button className="browse-button" onClick={() => router.push('/campuses')}>Explore Campuses</button>
-          <button className="nav-button" onClick={handleViewPlans}>Join TPC</button>
+          <Link href="/plans" className="nav-button">Join TPC</Link>
         </div>
         <div className="right-section">
           <form className="search-form" onSubmit={handleSearch}>
