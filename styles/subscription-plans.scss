@@ -1,7 +1,7 @@
 @use './variables' as *;
 
 .subscription-plans-page {
-  height: 100vh;
+  min-height: 100vh;
   background: $background-dark;
   color: $light-text;
   overflow: hidden;
@@ -18,7 +18,7 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
     position: relative;
     z-index: 1;
 

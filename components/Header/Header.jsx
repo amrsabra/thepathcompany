@@ -103,7 +103,7 @@ const Header = ({ forceSolid = false }) => {
         </div>
         <div className="left-section">
           <button className="browse-button" onClick={() => router.push('/campuses')}>Explore Campuses</button>
-          <Link href="/plans" className="nav-button">Join TPC</Link>
+          <button className="nav-button"onClick={() => {window.location.href = '/plans';}}>Join TPC</button>
         </div>
         <div className="right-section">
           <form className="search-form" onSubmit={handleSearch}>

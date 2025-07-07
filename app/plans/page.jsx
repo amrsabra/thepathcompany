@@ -108,6 +108,17 @@ const SubscriptionPlans = () => {
     createProfile();
   }, [router]);
 
+  useEffect(() => {
+    // ✅ Force layout reflow and scroll reset
+    document.body.style.display = 'none';
+  
+    requestAnimationFrame(() => {
+      document.body.style.display = '';
+      window.scrollTo(0, 0);
+    });
+  }, []);
+  
+
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
   };
