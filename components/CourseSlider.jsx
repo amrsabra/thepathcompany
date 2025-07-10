@@ -86,32 +86,21 @@ const courses = [
 const CourseSlider = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [hoveredCourse, setHoveredCourse] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const sliderRef = useRef(null);
+
+  // Scroll by one card width
+  const scrollByCard = (direction) => {
+    const container = sliderRef.current;
+    if (!container) return;
+    const card = container.querySelector('.course-card');
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 32; // 32px = gap (2rem)
+    container.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+  };
 
   const filteredCourses = selectedCategory === 'All' 
     ? courses 
     : courses.filter(course => course.category === selectedCategory);
-
-  const visibleCourses = 4; // Number of courses to show at once
-  const totalSlides = Math.ceil(filteredCourses.length / visibleCourses);
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? totalSlides - 1 : prevIndex - 1
-    );
-  };
-
-  const getVisibleCourses = () => {
-    const start = currentIndex * visibleCourses;
-    return filteredCourses.slice(start, start + visibleCourses);
-  };
 
   return (
     <section className="course-slider">
@@ -128,7 +117,6 @@ const CourseSlider = () => {
                 className={`course-slider__filter ${selectedCategory === category ? 'active' : ''}`}
                 onClick={() => {
                   setSelectedCategory(category);
-                  setCurrentIndex(0);
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -137,31 +125,16 @@ const CourseSlider = () => {
               </motion.button>
             ))}
           </div>
-          <div className="course-slider__controls">
-            <button className="course-slider__control" onClick={prevSlide}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-            <button className="course-slider__control" onClick={nextSlide}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
         </div>
 
-        <div className="course-slider__container" ref={sliderRef}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              className="course-slider__row"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.3 }}
-            >
-              {getVisibleCourses().map((course) => (
+        <div className="course-slider__container-wrapper" style={{ position: 'relative' }}>
+          <div
+            className="course-slider__container"
+            ref={sliderRef}
+            style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}
+          >
+            <div className="course-slider__row" style={{ display: 'flex', gap: '2rem', minWidth: 0 }}>
+              {filteredCourses.map((course) => (
                 <motion.div
                   key={course.id}
                   className="course-card"
@@ -196,8 +169,24 @@ const CourseSlider = () => {
                   )}
                 </motion.div>
               ))}
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </div>
+          <div className="course-slider__arrow-group">
+            <button
+              className="course-slider__arrow course-slider__arrow--left"
+              onClick={() => scrollByCard(-1)}
+              aria-label="Scroll left"
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+            <button
+              className="course-slider__arrow course-slider__arrow--right"
+              onClick={() => scrollByCard(1)}
+              aria-label="Scroll right"
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -1,0 +1,52 @@
+.instructor-marquee {
+  width: 350px;
+  height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  margin: 0 auto;
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: rotateCarousel 12s linear infinite;
+}
+
+.carousel__item {
+  --item-angle: calc(360deg / var(--total));
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 120px;
+  transform: rotateY(calc(var(--i) * var(--item-angle))) translateZ(180px) translate(-50%, -50%);
+  transition: transform 0.5s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+  }
+}
+
+@keyframes rotateCarousel {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+} 

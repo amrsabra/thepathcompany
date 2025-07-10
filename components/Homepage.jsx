@@ -13,6 +13,7 @@ import '../styles/homepage.scss';
 import '../styles/course-slider.scss';
 import '../styles/membership-benefits.scss';
 import '../styles/coming-soon-slider.scss';
+import { ThreeDMarquee } from '@/components/ui/3d-marquee';
 
 const Homepage = () => {
   const [heroRef, heroInView] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -55,34 +56,6 @@ const Homepage = () => {
     }
   ];
 
-  // Demo testimonials
-  const testimonials = [
-    {
-      name: "Sarah Al-Rashid",
-      role: "Software Engineer",
-      company: "TechCorp Dubai",
-      image: "/images/testimonial-1.jpg",
-      rating: 5,
-      text: "TPC transformed my career journey. The cinematic approach to learning made complex topics engaging and memorable. I've gained practical skills that I use daily in my role."
-    },
-    {
-      name: "Ahmed Hassan",
-      role: "Marketing Director",
-      company: "Digital Solutions MENA",
-      image: "/images/testimonial-2.jpg",
-      rating: 5,
-      text: "The quality of courses here is unmatched. The instructors are industry experts who bring real-world experience. The Plan My Career tool helped me choose the perfect learning path."
-    },
-    {
-      name: "Layla Mansour",
-      role: "UX Designer",
-      company: "Creative Studio Riyadh",
-      image: "/images/testimonial-3.jpg",
-      rating: 5,
-      text: "As someone who struggled with traditional learning methods, TPC's innovative approach was a game-changer. The visual storytelling and practical projects made learning enjoyable."
-    }
-  ];
-
   // ✅ Scroll detection
   useEffect(() => {
     const handleScroll = () => {
@@ -102,92 +75,54 @@ const Homepage = () => {
             <div className="hero__particles" />
           </div>
           <div className="container">
-            <motion.div
-              className="hero__content"
-              initial={{ opacity: 0, y: 50 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="hero__title">
-                <img src="/logo.png" alt="The Path Company Logo" className="mx-auto mb-2 h-16 w-auto" />
-                <br />
-                Where Learning Meets
-                <br />
-                <span className="gradient-text">Cinematic Excellence</span>
-              </h1>
-              <p className="hero__subtitle">
-                Transform your future with premium, handpicked courses designed for the next generation of Arab leaders.
-              </p>
-              <div className="hero__buttons">
-                <motion.button
-                  className="hero__cta hero__cta--primary"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowPersonalization(true)}
+            <div className="hero__columns">
+              <div className="hero__left">
+                <motion.div
+                  className="hero__content"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={heroInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.8 }}
                 >
-                  Personalise Your Experience
-                </motion.button>
-                <motion.button
-                  className="hero__cta hero__cta--secondary"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleSubscribe}
-                >
-                  Subscribe Now
-                </motion.button>
+                  <h1 className="hero__title">
+                    <img src="/logo.png" alt="The Path Company Logo" className="mx-auto mb-2 h-16 w-auto" />
+                    <br />
+                    Where Learning Meets
+                    <br />
+                    <span className="gradient-text">Cinematic Excellence</span>
+                  </h1>
+                  <p className="hero__subtitle">
+                    Transform your future with premium, handpicked courses designed for the next generation of Arab leaders.
+                  </p>
+                </motion.div>
               </div>
-            </motion.div>
+              <div className="hero__right">
+                <div className="marquee-wrapper">
+                  <ThreeDMarquee
+                    images={[
+                      "https://assets.aceternity.com/cloudinary_bkp/3d-card.png",
+                      "https://assets.aceternity.com/animated-modal.png",
+                      "https://assets.aceternity.com/animated-testimonials.webp",
+                      "https://assets.aceternity.com/cloudinary_bkp/Tooltip_luwy44.png",
+                      "https://assets.aceternity.com/github-globe.png",
+                      "https://assets.aceternity.com/glare-card.png",
+                      "https://assets.aceternity.com/layout-grid.png",
+                      "https://assets.aceternity.com/flip-text.png",
+                      "https://assets.aceternity.com/hero-highlight.png",
+                      "https://assets.aceternity.com/carousel.webp",
+                      "https://assets.aceternity.com/placeholders-and-vanish-input.png",
+                      "https://assets.aceternity.com/shooting-stars-and-stars-background.png",
+                    ]}
+                    className="custom-marquee"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         <MembershipBenefits />
         <CourseSlider />
         <ComingSoonSlider />
-
-        {/* Testimonials Section */}
-        <section className="testimonials" ref={testimonialsRef}>
-          <div className="container">
-            <motion.div
-              className="testimonials__header"
-              initial={{ opacity: 0, y: 30 }}
-              animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="section-title">What Our Learners Say</h2>
-              <p className="section-subtitle">Join thousands of satisfied learners who have transformed their careers with TPC</p>
-            </motion.div>
-            
-            <div className="testimonials__grid">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={index}
-                  className="testimonial-card"
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={testimonialsInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                >
-                  <div className="testimonial-card__rating">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <FiStar key={i} className="star-icon" />
-                    ))}
-                  </div>
-                  <p className="testimonial-card__text">"{testimonial.text}"</p>
-                  <div className="testimonial-card__author">
-                    <div className="testimonial-card__avatar">
-                      <div className="avatar-placeholder">
-                        {testimonial.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                    </div>
-                    <div className="testimonial-card__info">
-                      <h4>{testimonial.name}</h4>
-                      <p>{testimonial.role} at {testimonial.company}</p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* FAQ Section */}
         <section className="faq-section" ref={faqRef}>

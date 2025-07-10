@@ -1,3 +1,5 @@
+@use '../../styles/variables' as *;
+
 .header {
   position: fixed;
   top: 1.5rem;
@@ -7,6 +9,11 @@
   max-width: 1400px;
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(24, 24, 28, 0.98);
+
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.12);
+  border-radius: 18px;
+  border: 1px solid rgba(60,60,80,0.18);
 
   .logo-container {
     position: absolute;
@@ -34,7 +41,7 @@
     top: 0;
     width: 100%;
     max-width: 100%;
-    background: rgba(23, 23, 33, 0.98);
+    background: rgba(24, 24, 28, 0.98);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -163,7 +170,7 @@
           }
 
           .login {
-            background: linear-gradient(135deg, #872B97, #FF3C68);
+            background: linear-gradient(135deg, $primary-accent, $main-cta);
             border: none;
             color: white;
             padding: 0.5rem 1rem;
@@ -180,7 +187,7 @@
 
             &:hover {
               transform: translateY(-1px);
-              box-shadow: 0 4px 12px rgba(135, 43, 151, 0.2);
+              box-shadow: 0 4px 12px rgba(93, 63, 211, 0.3);
             }
           }
         }
@@ -336,7 +343,7 @@
               transition: all 0.2s ease;
 
               &:hover {
-                color: #872B97;
+                color: $main-cta;
               }
             }
 
@@ -382,7 +389,7 @@
     align-items: center;
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.3),
-      0 2px 8px rgba(135, 43, 151, 0.2);
+      0 2px 8px rgba(93, 63, 211, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
 
     .left-section {
@@ -393,7 +400,7 @@
       gap: 1rem;
 
       .browse-button {
-        background: linear-gradient(135deg, #872B97, #FF3C68);
+        background: linear-gradient(135deg, $primary-accent, $main-cta);
         border: none;
         color: white;
         padding: 0.75rem 1.25rem;
@@ -408,7 +415,7 @@
 
         &:hover {
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(135, 43, 151, 0.2);
+          box-shadow: 0 4px 12px rgba(93, 63, 211, 0.3);
         }
 
         .icon {
@@ -428,13 +435,13 @@
 
         &:hover {
           background: transparent;
-          border-color: #FF3C68;
+          border-color: $main-cta;
           transform: translateY(-1px);
-          box-shadow: 0 0 0 1px rgba(255, 60, 104, 0.3);
+          box-shadow: 0 0 0 1px rgba(93, 63, 211, 0.3);
         }
 
         &.active {
-          background: linear-gradient(135deg, #FF7130, #FF3C68);
+          background: linear-gradient(135deg, $primary-accent, $main-cta);
           border-color: transparent;
         }
       }
@@ -460,13 +467,13 @@
 
         &:hover {
           background: transparent;
-          border-color: #FF3C68;
+          border-color: $main-cta;
           transform: translateY(-1px);
-          box-shadow: 0 0 0 1px rgba(255, 60, 104, 0.3);
+          box-shadow: 0 0 0 1px rgba(93, 63, 211, 0.3);
         }
 
         &.active {
-          background: linear-gradient(135deg, #FF7130, #FF3C68);
+          background: linear-gradient(135deg, $primary-accent, $main-cta);
           border-color: transparent;
         }
       }
@@ -552,7 +559,7 @@
         }
 
         .login {
-          background: linear-gradient(135deg, #872B97, #FF3C68);
+          background: linear-gradient(135deg, $primary-accent, $main-cta);
           border: none;
           color: white;
           padding: 0.5rem 1rem;
@@ -569,7 +576,7 @@
 
           &:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(135, 43, 151, 0.2);
+            box-shadow: 0 4px 12px rgba(93, 63, 211, 0.3);
           }
         }
       }
@@ -618,7 +625,7 @@
           top: 3px;
           height: calc(100% - 6px);
           width: 34px;
-          background: #872B97;
+          background: $main-cta;
           border-radius: 100px;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 1;
