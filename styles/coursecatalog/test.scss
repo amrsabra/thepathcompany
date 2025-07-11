@@ -1,0 +1,91 @@
+.test-course-page {
+  background: #111;
+  min-height: 100vh;
+  padding-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.test-course-video {
+  width: 100%;
+  max-width: 900px;
+  max-height: 500px;
+  aspect-ratio: 16/9;
+  background: #222;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.13);
+}
+
+.test-course-title {
+  text-align: center;
+  margin-top: 32px;
+  color: #fff;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.test-course-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.test-course-separator {
+  margin: 32px auto 0 auto;
+  width: 120px;
+  height: 5px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #872B97 0%, #F6B042 100%);
+  box-shadow: 0 1px 8px rgba(246, 176, 66, 0.18);
+}
+
+.test-course-instructor {
+  position: relative;
+  width: 100%;
+  margin: 28px 0 0 0;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: unset;
+  text-align: center;
+}
+
+.tpc-icon {
+  position: absolute;
+  left: calc(50% - 154px);
+  top: -45px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  display: block;
+}
+
+.tpc-x {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 1.25rem;
+  color: #F6B042;
+  font-weight: 700;
+  letter-spacing: 2px;
+  display: inline-block;
+  z-index: 2;
+}
+
+.tpc-instructor-name {
+  position: absolute;
+  left: calc(50% + 32px);
+  top: 4px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 8px rgba(135, 43, 151, 0.10);
+  white-space: nowrap;
+}
