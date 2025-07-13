@@ -1,24 +1,39 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* === CSS Reset & Box Model === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* === Base Styles === */
 body {
   background: #171721;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   min-height: 100vh;
   position: relative;
+  line-height: 1.5;
 }
 
+/* === Direction Support === */
+html[dir='rtl'] body {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir='ltr'] body {
+  direction: ltr;
+  text-align: left;
+}
+
+/* === Typography & Interactions === */
 button {
   cursor: pointer;
   font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
 }
 
 a {
@@ -26,8 +41,31 @@ a {
   color: inherit;
 }
 
+/* === Layout Helpers === */
 .homepage {
   position: relative;
   min-height: 100vh;
   padding-top: 5rem; // Add space for the floating header
-} 
+}
+
+.watch-now-btn {
+  background: linear-gradient(135deg, #872B97, #FF3C68);
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 48px;
+  box-shadow: 0 4px 24px 0 rgba(135,43,151,0.10);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  margin: 0 auto;
+  display: block;
+}
+
+.watch-now-btn:hover {
+  background: linear-gradient(135deg, #FF3C68, #872B97);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 8px 32px rgba(135,43,151,0.18);
+}

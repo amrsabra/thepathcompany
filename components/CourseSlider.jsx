@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FiInfo } from 'react-icons/fi';
 import '../styles/course-slider.scss';
 import Link from 'next/link';
 
@@ -85,7 +86,6 @@ const courses = [
 
 const CourseSlider = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [hoveredCourse, setHoveredCourse] = useState(null);
   const sliderRef = useRef(null);
 
   // Scroll by one card width
@@ -96,6 +96,26 @@ const CourseSlider = () => {
     if (!card) return;
     const cardWidth = card.offsetWidth + 32; // 32px = gap (2rem)
     container.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+  };
+
+  const handleCourseClick = (courseId) => {
+    // Navigate to course player page - immediately start playing like Netflix
+    if (courseId === 2) { // Startup Fundamentals course
+      window.location.href = `/watch/test`;
+    } else {
+      // For other courses, redirect to a generic course player
+      window.location.href = `/watch/test`;
+    }
+  };
+
+  const handleInfoClick = (e, courseId) => {
+    e.stopPropagation(); // Prevent triggering the course click
+    // Navigate to course catalog/info page
+    if (courseId === 2) { // Startup Fundamentals course
+      window.location.href = `/catalog/test`;
+    } else {
+      window.location.href = `/catalog`;
+    }
   };
 
   const filteredCourses = selectedCategory === 'All' 
@@ -138,35 +158,26 @@ const CourseSlider = () => {
                 <motion.div
                   key={course.id}
                   className="course-card"
-                  onHoverStart={() => setHoveredCourse(course.id)}
-                  onHoverEnd={() => setHoveredCourse(null)}
-                  whileHover={{ scale: 1.05, zIndex: 1 }}
+                  onClick={() => handleCourseClick(course.id)}
+                  whileTap={{ scale: 0.98 }}
+                  style={{ cursor: 'pointer' }}
                 >
                   <div className="course-card__thumbnail">
                     <img src={course.thumbnail} alt={course.title} />
                     <div className="course-card__overlay" />
+                    <button
+                      className="course-card__info-button"
+                      onClick={(e) => handleInfoClick(e, course.id)}
+                      aria-label="Course information"
+                    >
+                      <FiInfo size={20} />
+                    </button>
                   </div>
                   <div className="course-card__content">
                     <h3>{course.title}</h3>
                     <p className="course-card__instructor">{course.instructor}</p>
                     <p className="course-card__duration">{course.duration}</p>
                   </div>
-                  {hoveredCourse === course.id && (
-                    <motion.div
-                      className="course-card__hover"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                    >
-                      <div className="course-card__description">
-                        {course.description}
-                      </div>
-                      <div className="course-card__actions">
-                        <button className="course-card__play">Watch Now</button>
-                        <Link href={`/course/${course.id}`} className="course-card__info">More Info</Link>
-                      </div>
-                    </motion.div>
-                  )}
                 </motion.div>
               ))}
             </div>

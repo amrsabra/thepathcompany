@@ -243,6 +243,35 @@ $hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
     );
   }
 
+  &__info-button {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 3;
+    backdrop-filter: blur(4px);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
   &__content {
     position: absolute;
     bottom: 0;
@@ -256,7 +285,6 @@ $hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
       margin: 0;
       font-size: $font-size-lg;
       font-weight: $font-weight-bold;
-      transition: transform 0.4s ease;
     }
 
     .course-card__instructor,
@@ -264,107 +292,6 @@ $hover-shadow: 0 10px 20px rgba($background-dark, 0.2);
       margin: $spacing-xs 0 0;
       font-size: $font-size-sm;
       opacity: 0.8;
-      transition: all 0.4s ease;
-    }
-  }
-
-  &__hover {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: $card-padding;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      rgba(0, 0, 0, 0.95) 40%,
-      rgba(0, 0, 0, 0.98) 100%
-    );
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-md;
-    transform: translateY(100%);
-    transition: transform 0.4s ease;
-    z-index: 2;
-
-    .course-card__description {
-      display: none;
-    }
-  }
-
-  &__actions {
-    display: flex;
-    gap: $spacing-md;
-    padding: 0 0.5rem;
-  }
-
-  &__play,
-  &__info {
-    flex: 1;
-    padding: 0.6rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    text-decoration: none;
-    backdrop-filter: blur(4px);
-    letter-spacing: 0.2px;
-  }
-
-  &__play {
-    background: $primary-accent;
-    color: rgba(255, 255, 255, 0.95);
-
-    &:hover {
-      background: color.adjust($primary-accent, $lightness: -5%);
-      border-color: transparent;
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-
-  &__info {
-    background: transparent;
-    color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: rgba(255, 255, 255, 0.95);
-      border-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-  }
-
-  &:hover {
-    .course-card__thumbnail img {
-      transform: scale(1.05);
-    }
-
-    .course-card__content {
-      h3 {
-        transform: translateY(-30px);
-      }
-
-      .course-card__instructor,
-      .course-card__duration {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-    }
-
-    .course-card__hover {
-      transform: translateY(0);
     }
   }
 }
