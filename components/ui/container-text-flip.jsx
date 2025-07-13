@@ -58,7 +58,7 @@ export function ContainerTextFlip({ words }) {
         style={{
           position: 'absolute',
           right: -60,
-          top: '50%',
+          bottom: 10,
           transform: 'translateY(-50%)',
           display: 'flex',
           flexDirection: 'column',
