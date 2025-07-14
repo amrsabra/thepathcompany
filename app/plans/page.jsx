@@ -205,7 +205,7 @@ const SubscriptionPlans = () => {
     setStripeLoading(true);
     setStripeError('');
     try {
-      const res = await fetch('http://localhost:8000/api/create-stripe-checkout-session', {
+      const res = await fetch('/api/create-stripe-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
