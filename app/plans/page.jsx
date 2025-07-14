@@ -230,6 +230,19 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subscription-plans-page">
+      <style>{`
+        input[type="email"]:-webkit-autofill,
+        input[type="email"]:-webkit-autofill:focus,
+        input[type="email"]:-webkit-autofill:hover,
+        input[type="email"]:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 1000px #181818 inset !important;
+          box-shadow: 0 0 0 1000px #181818 inset !important;
+          -webkit-text-fill-color: #fff !important;
+          caret-color: #fff !important;
+          color: #fff !important;
+          border: none !important;
+        }
+      `}</style>
       <Header forceSolid={true} />
       
       <div className="plans-container">
@@ -320,57 +333,124 @@ const SubscriptionPlans = () => {
               </button>
             </div>
 
-            <button
-              className="subscribe-btn"
-              onClick={async () => {
-                if (userEmail) {
-                  handleStripeCheckout(userEmail);
-                } else {
-                  setShowEmailPrompt(true);
-                  setTimeout(() => manualEmailRef.current?.focus(), 100);
-                }
-              }}
-              disabled={stripeLoading}
-            >
-              {stripeLoading ? (
-                <>
-                  <span className="spinner" style={{ marginRight: 8 }}></span>
-                  Redirecting to Stripe...
-                </>
-              ) : (
-                <>
-                  <FiZap /> Get Premium Access
-                </>
-              )}
-            </button>
+            {/* Only show the subscribe button if the email prompt is NOT open */}
+            {!showEmailPrompt && (
+              <button
+                className="subscribe-btn"
+                onClick={async () => {
+                  if (userEmail) {
+                    handleStripeCheckout(userEmail);
+                  } else {
+                    setShowEmailPrompt(true);
+                    setTimeout(() => manualEmailRef.current?.focus(), 100);
+                  }
+                }}
+                disabled={stripeLoading}
+              >
+                {stripeLoading ? (
+                  <>
+                    <span className="spinner" style={{ marginRight: 8 }}></span>
+                    Redirecting to Stripe...
+                  </>
+                ) : (
+                  <>
+                    <FiZap /> Get Premium Access
+                  </>
+                )}
+              </button>
+            )}
             {stripeError && <div style={{ color: 'red', marginTop: 8 }}>{stripeError}</div>}
             {showEmailPrompt && (
-              <div className="email-prompt-modal" style={{ marginTop: 16, background: '#fff', padding: 20, borderRadius: 8, boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
-                <label htmlFor="manual-email">Enter your email to continue:</label>
+              <div className="email-prompt-modal" style={{
+                marginTop: 10,
+                background: '#181818',
+                padding: 6,
+                borderRadius: 32,
+                boxShadow: '0 2px 16px rgba(0,0,0,0.18)',
+                maxWidth: 340,
+                marginLeft: 0,
+                marginRight: 0,
+                marginBottom: 32,
+                color: '#fff',
+                border: '1px solid #333',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
                 <input
                   id="manual-email"
                   ref={manualEmailRef}
                   type="email"
                   value={manualEmail}
                   onChange={e => setManualEmail(e.target.value)}
-                  style={{ margin: '8px 0', padding: 8, width: '100%' }}
+                  style={{
+                    padding: '8px 0 8px 16px',
+                    border: 'none',
+                    background: 'transparent',
+                    boxShadow: 'none',
+                    WebkitBoxShadow: 'none',
+                    MozBoxShadow: 'none',
+                    outline: 'none',
+                    color: '#fff',
+                    fontSize: 15,
+                    flex: 1,
+                    minWidth: 0,
+                    '::placeholder': { color: '#aaa' },
+                  }}
                   placeholder="you@example.com"
                   required
                 />
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button
-                    style={{ flex: 1 }}
-                    onClick={async () => {
-                      if (!manualEmail) return;
-                      setShowEmailPrompt(false);
-                      handleStripeCheckout(manualEmail);
-                    }}
-                    disabled={!manualEmail || stripeLoading}
-                  >
-                    Continue
-                  </button>
-                  <button style={{ flex: 1 }} onClick={() => setShowEmailPrompt(false)} disabled={stripeLoading}>Cancel</button>
-                </div>
+                <button
+                  style={{
+                    background: '#FFD600',
+                    color: '#181818',
+                    border: 'none',
+                    borderRadius: '50%',
+                    width: 32,
+                    height: 32,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 18,
+                    marginLeft: 6,
+                    cursor: !manualEmail || stripeLoading ? 'not-allowed' : 'pointer',
+                    opacity: !manualEmail || stripeLoading ? 0.7 : 1,
+                    transition: 'opacity 0.2s',
+                  }}
+                  onClick={async () => {
+                    if (!manualEmail) return;
+                    setShowEmailPrompt(false);
+                    handleStripeCheckout(manualEmail);
+                  }}
+                  disabled={!manualEmail || stripeLoading}
+                  aria-label="Continue"
+                >
+                  <FiCheck />
+                </button>
+                <button
+                  style={{
+                    background: 'transparent',
+                    color: '#fff',
+                    border: '1.2px solid #444',
+                    borderRadius: '50%',
+                    width: 32,
+                    height: 32,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 18,
+                    marginLeft: 4,
+                    cursor: stripeLoading ? 'not-allowed' : 'pointer',
+                    opacity: stripeLoading ? 0.7 : 1,
+                    transition: 'opacity 0.2s',
+                  }}
+                  onClick={() => setShowEmailPrompt(false)}
+                  disabled={stripeLoading}
+                  aria-label="Cancel"
+                >
+                  <FiX />
+                </button>
               </div>
             )}
 
