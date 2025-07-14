@@ -99,12 +99,11 @@ const CourseSlider = () => {
   };
 
   const handleCourseClick = (courseId) => {
-    // Navigate to course player page - immediately start playing like Netflix
+    // Navigate to course catalog/info page
     if (courseId === 2) { // Startup Fundamentals course
-      window.location.href = `/watch/test`;
+      window.location.href = `/catalog/test`;
     } else {
-      // For other courses, redirect to a generic course player
-      window.location.href = `/watch/test`;
+      window.location.href = `/catalog`;
     }
   };
 
@@ -160,18 +159,12 @@ const CourseSlider = () => {
                   className="course-card"
                   onClick={() => handleCourseClick(course.id)}
                   whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}
                   style={{ cursor: 'pointer' }}
                 >
                   <div className="course-card__thumbnail">
                     <img src={course.thumbnail} alt={course.title} />
                     <div className="course-card__overlay" />
-                    <button
-                      className="course-card__info-button"
-                      onClick={(e) => handleInfoClick(e, course.id)}
-                      aria-label="Course information"
-                    >
-                      <FiInfo size={20} />
-                    </button>
                   </div>
                   <div className="course-card__content">
                     <h3>{course.title}</h3>

@@ -32,17 +32,25 @@ import Header from '../../components/Header/Header';
 import '../../styles/subscription-plans.scss';
 import { supabase } from '../../supabaseClient';
 import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 
 const SubscriptionPlans = () => {
   const [openFaq, setOpenFaq] = useState(null);
   const [billingCycle, setBillingCycle] = useState('monthly');
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const [stripeLoading, setStripeLoading] = useState(false);
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
+  const [manualEmail, setManualEmail] = useState('');
+  const manualEmailRef = useRef();
+  const [stripeError, setStripeError] = useState('');
+  const [userEmail, setUserEmail] = useState(null);
 
   useEffect(() => {
     const createProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        setUserEmail(user?.email || null);
 
         if (!user) {
           setIsLoading(false);
@@ -192,6 +200,34 @@ const SubscriptionPlans = () => {
     );
   }
 
+  // Stripe Checkout handler
+  const handleStripeCheckout = async (email) => {
+    setStripeLoading(true);
+    setStripeError('');
+    try {
+      const res = await fetch('http://localhost:8000/api/create-stripe-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          price: getCurrentPrice(),
+          billing_cycle: billingCycle,
+          email: email,
+        })
+      });
+      if (!res.ok) throw new Error('Failed to create Stripe session');
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No Stripe URL returned');
+      }
+    } catch (err) {
+      setStripeError(err.message || 'Payment error');
+    } finally {
+      setStripeLoading(false);
+    }
+  };
+
   return (
     <div className="subscription-plans-page">
       <Header forceSolid={true} />
@@ -284,10 +320,59 @@ const SubscriptionPlans = () => {
               </button>
             </div>
 
-            <button className="subscribe-btn">
-              <FiZap />
-              Get Premium Access
+            <button
+              className="subscribe-btn"
+              onClick={async () => {
+                if (userEmail) {
+                  handleStripeCheckout(userEmail);
+                } else {
+                  setShowEmailPrompt(true);
+                  setTimeout(() => manualEmailRef.current?.focus(), 100);
+                }
+              }}
+              disabled={stripeLoading}
+            >
+              {stripeLoading ? (
+                <>
+                  <span className="spinner" style={{ marginRight: 8 }}></span>
+                  Redirecting to Stripe...
+                </>
+              ) : (
+                <>
+                  <FiZap /> Get Premium Access
+                </>
+              )}
             </button>
+            {stripeError && <div style={{ color: 'red', marginTop: 8 }}>{stripeError}</div>}
+            {showEmailPrompt && (
+              <div className="email-prompt-modal" style={{ marginTop: 16, background: '#fff', padding: 20, borderRadius: 8, boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
+                <label htmlFor="manual-email">Enter your email to continue:</label>
+                <input
+                  id="manual-email"
+                  ref={manualEmailRef}
+                  type="email"
+                  value={manualEmail}
+                  onChange={e => setManualEmail(e.target.value)}
+                  style={{ margin: '8px 0', padding: 8, width: '100%' }}
+                  placeholder="you@example.com"
+                  required
+                />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    style={{ flex: 1 }}
+                    onClick={async () => {
+                      if (!manualEmail) return;
+                      setShowEmailPrompt(false);
+                      handleStripeCheckout(manualEmail);
+                    }}
+                    disabled={!manualEmail || stripeLoading}
+                  >
+                    Continue
+                  </button>
+                  <button style={{ flex: 1 }} onClick={() => setShowEmailPrompt(false)} disabled={stripeLoading}>Cancel</button>
+                </div>
+              </div>
+            )}
 
             <div className="faq-section">
               <h3>Quick Questions</h3>
