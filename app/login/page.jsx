@@ -7,7 +7,6 @@ import Header from '../../components/Header/Header';
 import '../../styles/login.scss';
 import { supabase } from '../../supabaseClient';
 import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -20,7 +19,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isEmailFromCheckout, setIsEmailFromCheckout] = useState(false);
 
   useEffect(() => {
@@ -46,13 +44,15 @@ const Login = () => {
   }, [router]);
 
   useEffect(() => {
-    // Check for email in query params (from checkout)
-    const emailFromUrl = searchParams.get('email');
-    if (emailFromUrl) {
-      setFormData(prev => ({ ...prev, email: emailFromUrl }));
-      setIsEmailFromCheckout(true);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const emailFromUrl = params.get('email');
+      if (emailFromUrl) {
+        setFormData(prev => ({ ...prev, email: emailFromUrl }));
+        setIsEmailFromCheckout(true);
+      }
     }
-  }, [searchParams]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
