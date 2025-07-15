@@ -391,6 +391,7 @@ useEffect(() => {
                   onChange={handleChange}
                   placeholder="Username"
                   className={errors.username ? 'error' : ''}
+                  autoComplete="off"
                 />
                 {errors.username && <span className="error-message">{errors.username}</span>}
               </div>
@@ -441,10 +442,10 @@ useEffect(() => {
                   placeholder="Email"
                   className={errors.email ? 'error' : ''}
                   readOnly={isEmailFromPayment}
-                  style={isEmailFromPayment ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
+                  style={isEmailFromPayment ? { backgroundColor: '#232323', color: '#fff', cursor: 'not-allowed', opacity: 1 } : {}}
                 />
                 {isEmailFromPayment && (
-                  <small style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>
+                  <small style={{ color: '#bbb', fontSize: '12px', marginTop: '4px' }}>
                     Email from payment - cannot be changed
                   </small>
                 )}

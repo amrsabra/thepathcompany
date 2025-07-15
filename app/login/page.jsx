@@ -183,10 +183,10 @@ const Login = () => {
                 className={errors.email ? 'error' : ''}
                 placeholder="Enter your email"
                 readOnly={isEmailFromCheckout}
-                style={isEmailFromCheckout ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
+                style={isEmailFromCheckout ? { backgroundColor: '#232323', color: '#fff', cursor: 'not-allowed', opacity: 1 } : {}}
               />
               {isEmailFromCheckout && (
-                <small style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>
+                <small style={{ color: '#bbb', fontSize: '12px', marginTop: '4px' }}>
                   Email from your purchase - cannot be changed
                 </small>
               )}

@@ -61,16 +61,30 @@ export async function POST(request) {
 }
 
 async function handleSubscriptionCreated(subscription) {
+  const email = subscription.metadata?.email || subscription.customer_email;
+  // Check if user exists in profiles
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle();
+
+  let userId = null;
+  if (profile && profile.id) {
+    userId = profile.id;
+  }
+
   const { data, error } = await supabase
     .from('subscriptions')
     .insert({
       subscription_id: subscription.id,
-      email: subscription.metadata?.email || subscription.customer_email,
+      email: email,
       subscription_plan: subscription.metadata?.subscription_plan || 'unknown',
       status: subscription.status,
       start_date: new Date(subscription.current_period_start * 1000).toISOString(),
       end_date: new Date(subscription.current_period_end * 1000).toISOString(),
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      id: userId
     });
 
   if (error) {
