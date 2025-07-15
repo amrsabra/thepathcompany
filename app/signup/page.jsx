@@ -378,7 +378,7 @@ useEffect(() => {
               <FcGoogle size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
               {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
             </button>
-            {errors.google && <span className="error-message">{errors.google}</span>}
+            {errors.google && <span className="error-message">{typeof errors.google === 'string' ? errors.google : JSON.stringify(errors.google)}</span>}
           </div>
           <div className="divider">
             <span>or continue with email</span>
