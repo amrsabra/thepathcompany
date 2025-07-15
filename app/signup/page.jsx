@@ -44,6 +44,7 @@ const SignUp = () => {
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isEmailFromPayment, setIsEmailFromPayment] = useState(false);
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -232,6 +233,33 @@ useEffect(() => {
         return;
       }
   
+      // If user came from payment flow, link subscription after successful signup
+      if (isEmailFromPayment) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const response = await fetch('/api/link-subscription-to-profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                email: inputEmail,
+                userId: user.id
+              })
+            });
+            
+            if (response.ok) {
+              console.log('Subscription linked successfully');
+            } else {
+              console.error('Failed to link subscription');
+            }
+          }
+        } catch (linkError) {
+          console.error('Error linking subscription:', linkError);
+        }
+      }
+  
       setShowConfirmation(true);
     } catch (err) {
       console.error("Unexpected error during sign-up:", err);
@@ -256,6 +284,16 @@ useEffect(() => {
   }, [signupSuccess]);
 
   useEffect(() => {
+    // Check for email from URL parameters (payment flow)
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailFromUrl = urlParams.get('email');
+    const successFromUrl = urlParams.get('success');
+    
+    if (emailFromUrl && successFromUrl === 'true') {
+      setFormData(prev => ({ ...prev, email: emailFromUrl }));
+      setIsEmailFromPayment(true);
+    }
+
     const insertProfileIfNeeded = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const pending = localStorage.getItem('pendingProfile');
@@ -402,7 +440,14 @@ useEffect(() => {
                   onChange={handleChange}
                   placeholder="Email"
                   className={errors.email ? 'error' : ''}
+                  readOnly={isEmailFromPayment}
+                  style={isEmailFromPayment ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
                 />
+                {isEmailFromPayment && (
+                  <small style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>
+                    Email from payment - cannot be changed
+                  </small>
+                )}
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
               <div className="form-group password-group">

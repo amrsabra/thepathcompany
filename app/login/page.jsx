@@ -7,6 +7,7 @@ import Header from '../../components/Header/Header';
 import '../../styles/login.scss';
 import { supabase } from '../../supabaseClient';
 import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [isEmailFromCheckout, setIsEmailFromCheckout] = useState(false);
 
   useEffect(() => {
     const redirectIfLoggedIn = async () => {
@@ -41,6 +44,15 @@ const Login = () => {
 
     handleAuthCallback();
   }, [router]);
+
+  useEffect(() => {
+    // Check for email in query params (from checkout)
+    const emailFromUrl = searchParams.get('email');
+    if (emailFromUrl) {
+      setFormData(prev => ({ ...prev, email: emailFromUrl }));
+      setIsEmailFromCheckout(true);
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -170,7 +182,14 @@ const Login = () => {
                 onChange={handleChange}
                 className={errors.email ? 'error' : ''}
                 placeholder="Enter your email"
+                readOnly={isEmailFromCheckout}
+                style={isEmailFromCheckout ? { backgroundColor: '#f5f5f5', cursor: 'not-allowed' } : {}}
               />
+              {isEmailFromCheckout && (
+                <small style={{ color: '#666', fontSize: '12px', marginTop: '4px' }}>
+                  Email from your purchase - cannot be changed
+                </small>
+              )}
               {errors.email && <span className="error-message">{errors.email}</span>}
             </div>
 
