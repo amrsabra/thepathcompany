@@ -4,7 +4,7 @@
 
 ### Supabase Variables
 - [ ] `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` - Supabase service role key (keep secret!)
+- [ ] `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Supabase service role key (keep secret!)
 
 ### Stripe Variables
 - [ ] `STRIPE_SECRET_KEY` - Stripe secret key (starts with `sk_`)
@@ -23,7 +23,7 @@
 
 ## Security Notes
 
-- ✅ `SUPABASE_SERVICE_ROLE_KEY` - Keep this secret, never expose to client
+- ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Keep this secret, never expose to client
 - ✅ `STRIPE_SECRET_KEY` - Keep this secret, never expose to client  
 - ✅ `STRIPE_WEBHOOK_SECRET` - Keep this secret, never expose to client
 - ✅ `NEXT_PUBLIC_SUPABASE_URL` - Safe to expose (used in client)
