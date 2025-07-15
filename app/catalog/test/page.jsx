@@ -215,13 +215,13 @@ export default function CourseCatalogPage() {
                     {module.lessons.map((lesson, lessonIndex) => (
                       <div key={lessonIndex} className="lesson-item">
                         <div className="lesson-info">
-                          <span className="lesson-number">{lesson.number}</span>
+                          <span className="lesson-number">{typeof lesson.number === 'string' ? lesson.number : JSON.stringify(lesson.number)}</span>
                           <div className="lesson-details">
-                            <h4>{lesson.title}</h4>
-                            <p>{lesson.description}</p>
+                            <h4>{typeof lesson.title === 'string' ? lesson.title : JSON.stringify(lesson.title)}</h4>
+                            <p>{typeof lesson.description === 'string' ? lesson.description : JSON.stringify(lesson.description)}</p>
                           </div>
                         </div>
-                        <span className="lesson-duration">{lesson.duration}</span>
+                        <span className="lesson-duration">{typeof lesson.duration === 'string' ? lesson.duration : JSON.stringify(lesson.duration)}</span>
                       </div>
                     ))}
                   </motion.div>
@@ -355,11 +355,11 @@ export default function CourseCatalogPage() {
           >
             {courses.map((course, idx) => (
               <a href="#" className="carousel-card" key={idx} style={{ minWidth: 300, marginRight: idx !== courses.length - 1 ? 12 : 0 }}>
-                <div className="carousel-bg" style={{ backgroundImage: `url(${course.img})` }} />
+                <div className="carousel-bg" style={{ backgroundImage: `url(${typeof course.img === 'string' ? course.img : JSON.stringify(course.img)})` }} />
                 <div className="carousel-overlay">
-                  <div className="carousel-title">{course.title}</div>
-                  <div className="carousel-subtitle">{course.subtitle}</div>
-                  <div className="carousel-duration">{course.duration}</div>
+                  <div className="carousel-title">{typeof course.title === 'string' ? course.title : JSON.stringify(course.title)}</div>
+                  <div className="carousel-subtitle">{typeof course.subtitle === 'string' ? course.subtitle : JSON.stringify(course.subtitle)}</div>
+                  <div className="carousel-duration">{typeof course.duration === 'string' ? course.duration : JSON.stringify(course.duration)}</div>
                 </div>
               </a>
             ))}
