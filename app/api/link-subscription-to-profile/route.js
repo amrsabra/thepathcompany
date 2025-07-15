@@ -10,9 +10,10 @@ export async function POST(request) {
   try {
     const { email, userId } = await request.json();
 
-    console.log('Linking subscription to profile:', { email, userId });
+    const normalizedEmail = email.trim().toLowerCase();
+    console.log('Linking subscription to profile:', { email: normalizedEmail, userId });
 
-    if (!email || !userId) {
+    if (!normalizedEmail || !userId) {
       return NextResponse.json(
         { error: 'Email and userId are required' },
         { status: 400 }
@@ -23,7 +24,7 @@ export async function POST(request) {
     const { data: subscription, error: fetchError } = await supabase
       .from('subscriptions')
       .select('*')
-      .eq('email', email)
+      .eq('email', normalizedEmail)
       .is('id', null)
       .maybeSingle();
 
@@ -38,6 +39,12 @@ export async function POST(request) {
     }
 
     if (!subscription) {
+      // Log all subscriptions for this email for debugging
+      const { data: allSubs, error: allSubsError } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('email', normalizedEmail);
+      console.log('All subscriptions for email:', allSubs);
       return NextResponse.json(
         { error: 'No unlinked subscription found for this email' },
         { status: 404 }

@@ -356,6 +356,21 @@ useEffect(() => {
         } else {
           console.log('Profile inserted!');
           localStorage.removeItem('pendingProfile');
+          // Always attempt to link any orphaned subscriptions for this email
+          try {
+            const response = await fetch('/api/link-subscription-to-profile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: session.user.email, userId: session.user.id })
+            });
+            if (response.ok) {
+              console.log('Subscription linked (post-profile upsert)');
+            } else {
+              console.error('Failed to link subscription (post-profile upsert)');
+            }
+          } catch (linkError) {
+            console.error('Error linking subscription (post-profile upsert):', linkError);
+          }
         }
       }
     };
