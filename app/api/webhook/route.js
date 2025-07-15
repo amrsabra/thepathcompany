@@ -30,22 +30,18 @@ export async function POST(request) {
 
   try {
     switch (event.type) {
-      case 'customer.subscription.created':
-        await handleSubscriptionCreated(event.data.object);
+      case 'checkout.session.completed':
+        await handleCheckoutSessionCompleted(event.data.object);
         break;
-      
       case 'customer.subscription.updated':
         await handleSubscriptionUpdated(event.data.object);
         break;
-      
       case 'customer.subscription.deleted':
         await handleSubscriptionDeleted(event.data.object);
         break;
-      
       case 'invoice.payment_failed':
         await handlePaymentFailed(event.data.object);
         break;
-      
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
@@ -60,8 +56,31 @@ export async function POST(request) {
   }
 }
 
-async function handleSubscriptionCreated(subscription) {
-  const email = subscription.metadata?.email || subscription.customer_email;
+// Helper to safely convert Stripe timestamps to ISO strings
+function safeToISOString(timestamp) {
+  if (typeof timestamp === 'number' && !isNaN(timestamp)) {
+    return new Date(timestamp * 1000).toISOString();
+  }
+  return null;
+}
+
+async function handleCheckoutSessionCompleted(session) {
+  console.log('checkout.session.completed payload:', session);
+  const email = session.customer_email || session.metadata?.email;
+  const subscription_id = session.subscription;
+  const plan = session.metadata?.subscription_plan || 'unknown';
+  const billing_cycle = session.metadata?.billing_cycle || null;
+
+  // Fetch the subscription from Stripe to get start/end dates and status
+  let subscription;
+  try {
+    subscription = await stripe.subscriptions.retrieve(subscription_id);
+    console.log('Fetched subscription from Stripe:', subscription);
+  } catch (err) {
+    console.error('Error fetching subscription from Stripe:', err);
+    throw err;
+  }
+
   // Check if user exists in profiles
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
@@ -74,22 +93,28 @@ async function handleSubscriptionCreated(subscription) {
     userId = profile.id;
   }
 
-  const { data, error } = await supabase
+  const insertData = {
+    subscription_id: subscription.id,
+    email: email,
+    subscription_plan: plan,
+    status: subscription.status,
+    start_date: safeToISOString(subscription.current_period_start),
+    end_date: safeToISOString(subscription.current_period_end),
+    created_at: new Date().toISOString(),
+    id: userId
+  };
+
+  console.log('Inserting subscription data:', insertData);
+
+  const { error } = await supabase
     .from('subscriptions')
-    .insert({
-      subscription_id: subscription.id,
-      email: email,
-      subscription_plan: subscription.metadata?.subscription_plan || 'unknown',
-      status: subscription.status,
-      start_date: new Date(subscription.current_period_start * 1000).toISOString(),
-      end_date: new Date(subscription.current_period_end * 1000).toISOString(),
-      created_at: new Date().toISOString(),
-      id: userId
-    });
+    .insert(insertData);
 
   if (error) {
     console.error('Error creating subscription record:', error);
     throw error;
+  } else {
+    console.log('Subscription record created successfully');
   }
 }
 
