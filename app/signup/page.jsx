@@ -215,6 +215,7 @@ useEffect(() => {
         date_of_birth: `${formData.birthYear}-${formData.birthMonth}-${formData.birthDay}`,
       };
   
+      console.log('Saving to pendingProfile:', profileData);
       localStorage.setItem('pendingProfile', JSON.stringify(profileData));
   
       const { data, error } = await supabase.auth.signUp({
@@ -340,14 +341,16 @@ useEffect(() => {
           const monthNum = (isNaN(month) ? (months.indexOf(month) + 1).toString().padStart(2, '0') : month.padStart(2, '0'));
           dob = `${year}-${monthNum}-${day.padStart(2, '0')}`;
         }
-        const { error } = await supabase.from('profiles').upsert([{
+        const upsertPayload = {
           id: session.user.id,
           username: profile.username,
           first_name: profile.first_name,
           last_name: profile.last_name,
           date_of_birth: dob,
           stripe_customer: null,
-        }]);
+        };
+        console.log('Upserting profile:', upsertPayload);
+        const { error } = await supabase.from('profiles').upsert([upsertPayload]);
         if (error) {
           console.error('Profile insert error:', error);
         } else {
@@ -378,7 +381,7 @@ useEffect(() => {
               <FcGoogle size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
               {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
             </button>
-            {errors.google && <span className="error-message">{typeof errors.google === 'string' ? errors.google : JSON.stringify(errors.google)}</span>}
+            {errors.google && <span className="error-message">{errors.google}</span>}
           </div>
           <div className="divider">
             <span>or continue with email</span>
