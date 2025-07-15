@@ -278,10 +278,42 @@ useEffect(() => {
       if (session?.user?.email_confirmed_at) {
         setEmailConfirmed(true);
         clearInterval(interval);
+
+        // After confirmation, check for subscription and redirect
+        const user = session.user;
+        // Link subscription if from payment flow
+        if (isEmailFromPayment) {
+          try {
+            const response = await fetch('/api/link-subscription-to-profile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: user.email, userId: user.id })
+            });
+            if (response.ok) {
+              console.log('Subscription linked successfully');
+            } else {
+              console.error('Failed to link subscription');
+            }
+          } catch (linkError) {
+            console.error('Error linking subscription:', linkError);
+          }
+        }
+        // Check for active subscription
+        const { data: subData, error: subError } = await supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('email', user.email)
+          .eq('status', 'active')
+          .maybeSingle();
+        if (subData && subData.id) {
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = '/plans';
+        }
       }
     }, 3000);
     return () => clearInterval(interval);
-  }, [signupSuccess]);
+  }, [signupSuccess, isEmailFromPayment]);
 
   useEffect(() => {
     // Check for email from URL parameters (payment flow)
@@ -301,9 +333,19 @@ useEffect(() => {
       console.log('Pending profile:', pending);
       if (session?.user && pending) {
         const profile = JSON.parse(pending);
+        // Fix date_of_birth to be YYYY-MM-DD
+        let dob = null;
+        if (profile.date_of_birth) {
+          const [year, month, day] = profile.date_of_birth.split('-');
+          const monthNum = (isNaN(month) ? (months.indexOf(month) + 1).toString().padStart(2, '0') : month.padStart(2, '0'));
+          dob = `${year}-${monthNum}-${day.padStart(2, '0')}`;
+        }
         const { error } = await supabase.from('profiles').upsert([{
           id: session.user.id,
-          ...profile,
+          username: profile.username,
+          first_name: profile.first_name,
+          last_name: profile.last_name,
+          date_of_birth: dob,
           stripe_customer: null,
         }]);
         if (error) {

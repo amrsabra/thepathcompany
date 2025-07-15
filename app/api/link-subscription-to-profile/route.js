@@ -10,6 +10,8 @@ export async function POST(request) {
   try {
     const { email, userId } = await request.json();
 
+    console.log('Linking subscription to profile:', { email, userId });
+
     if (!email || !userId) {
       return NextResponse.json(
         { error: 'Email and userId are required' },
@@ -24,6 +26,8 @@ export async function POST(request) {
       .eq('email', email)
       .is('id', null)
       .maybeSingle();
+
+    console.log('Found subscription:', subscription);
 
     if (fetchError) {
       console.error('Error fetching subscription:', fetchError);
@@ -52,6 +56,8 @@ export async function POST(request) {
         { error: 'Failed to link subscription to profile' },
         { status: 500 }
       );
+    } else {
+      console.log('Subscription linked successfully:', subscription.subscription_id);
     }
 
     return NextResponse.json({
