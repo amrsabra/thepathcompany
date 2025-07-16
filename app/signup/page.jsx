@@ -340,24 +340,22 @@ useEffect(() => {
         const { error } = await supabase.from('profiles').upsert([upsertPayload]);
         if (error) {
           console.error('Profile insert error:', error);
-        } else {
-          console.log('Profile inserted!');
-          localStorage.removeItem('pendingProfile');
-          // Always attempt to link any orphaned subscriptions for this email
-          try {
-            const response = await fetch('/api/link-subscription-to-profile', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: session.user.email, userId: session.user.id })
-            });
-            if (response.ok) {
-              console.log('Subscription linked (post-profile upsert)');
-            } else {
-              console.error('Failed to link subscription (post-profile upsert)');
-            }
-          } catch (linkError) {
-            console.error('Error linking subscription (post-profile upsert):', linkError);
+        }
+        console.log('Profile inserted!');
+        localStorage.removeItem('pendingProfile');
+        // Always attempt to link any orphaned subscriptions for this email
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user) {
+            await supabase
+              .from('subscriptions')
+              .update({ id: session.user.id })
+              .eq('email', session.user.email)
+              .is('id', null);
+            console.log('🔗 Subscription linking attempted after profile upsert for', session.user.email);
           }
+        } catch (linkError) {
+          console.error('Error linking subscription (post-profile upsert):', linkError);
         }
       }
     };
