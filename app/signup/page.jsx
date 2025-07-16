@@ -347,12 +347,23 @@ useEffect(() => {
         try {
           const { data: { session } } = await supabase.auth.getSession();
           if (session?.user) {
-            await supabase
+            const normalizedEmail = session.user.email.trim().toLowerCase();
+            console.log('Attempting to link subscription for:', normalizedEmail, session.user.id);
+
+            const { data, error } = await supabase
               .from('subscriptions')
               .update({ id: session.user.id })
-              .eq('email', session.user.email)
-              .is('id', null);
-            console.log('🔗 Subscription linking attempted after profile upsert for', session.user.email);
+              .eq('email', normalizedEmail)
+              .is('id', null)
+              .select(); // fetch updated rows for logging
+
+            if (error) {
+              console.error('Subscription linking error:', error);
+            } else {
+              console.log('Subscription linking result:', data, 'Rows updated:', data?.length);
+            }
+          } else {
+            console.log('No session user found after profile upsert.');
           }
         } catch (linkError) {
           console.error('Error linking subscription (post-profile upsert):', linkError);
