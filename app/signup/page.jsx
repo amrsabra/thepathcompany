@@ -141,6 +141,19 @@ useEffect(() => {
 
       const user = session.user;
       const normalizedEmail = user.email.trim().toLowerCase();
+      console.log('Google OAuth SIGNED_IN event:', normalizedEmail, user.id);
+
+      // Immediately attempt to link subscription after Google OAuth signup
+      const { error: linkError } = await supabase
+        .from('subscriptions')
+        .update({ user_id: user.id })
+        .eq('email', normalizedEmail)
+        .is('user_id', null);
+      if (linkError) {
+        console.error('Linking error after Google OAuth signup:', linkError);
+      } else {
+        console.log('Linking attempted after Google OAuth signup for:', normalizedEmail);
+      }
 
       // 1. Upsert profile if not present
       const { data: existingProfile, error: profileError } = await supabase
@@ -245,31 +258,20 @@ useEffect(() => {
         setIsLoading(false);
         return;
       }
-  
-      // If user came from payment flow, link subscription after successful signup
-      if (isEmailFromPayment) {
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (user) {
-            const response = await fetch('/api/link-subscription-to-profile', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                email: inputEmail,
-                userId: user.id
-              })
-            });
-            
-            if (response.ok) {
-              console.log('Subscription linked successfully');
-            } else {
-              console.error('Failed to link subscription');
-            }
-          }
-        } catch (linkError) {
-          console.error('Error linking subscription:', linkError);
+
+      // Immediately attempt to link subscription after signup (before email confirmation)
+      if (data?.user) {
+        const normalizedEmail = data.user.email.trim().toLowerCase();
+        console.log('Attempting to link subscription right after signup:', normalizedEmail, data.user.id);
+        const { error: linkError } = await supabase
+          .from('subscriptions')
+          .update({ user_id: data.user.id })
+          .eq('email', normalizedEmail)
+          .is('user_id', null);
+        if (linkError) {
+          console.error('Linking error after signup:', linkError);
+        } else {
+          console.log('Linking attempted after signup for:', normalizedEmail);
         }
       }
   
