@@ -140,16 +140,41 @@ useEffect(() => {
       if (event !== 'SIGNED_IN' || !session?.user) return;
 
       const user = session.user;
+      const normalizedEmail = user.email.trim().toLowerCase();
 
-      // Always attempt to link any orphaned subscriptions for this email
+      // 1. Upsert profile if not present
+      const { data: existingProfile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!existingProfile && !profileError) {
+        // You can customize the fields as needed
+        await supabase.from('profiles').insert([{
+          id: user.id,
+          email: user.email,
+          username: user.user_metadata?.full_name || user.email.split('@')[0],
+          first_name: user.user_metadata?.given_name || '',
+          last_name: user.user_metadata?.family_name || '',
+          date_of_birth: null,
+          stripe_customer: null,
+        }]);
+      }
+
+      // 2. Link subscription
       try {
-        await supabase
+        const { data, error } = await supabase
           .from('subscriptions')
           .update({ id: user.id })
-          .eq('email', user.email)
-          .is('id', null);
-        // Optionally, log success/failure here
-        console.log('🔗 Subscription linking attempted on auth for', user.email);
+          .eq('email', normalizedEmail)
+          .is('id', null)
+          .select();
+        if (error) {
+          console.error('Subscription linking error:', error);
+        } else {
+          console.log('Subscription linking result:', data, 'Rows updated:', data?.length);
+        }
       } catch (linkError) {
         console.error('Error linking subscription on auth:', linkError);
       }
