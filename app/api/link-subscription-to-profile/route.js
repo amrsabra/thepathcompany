@@ -20,12 +20,12 @@ export async function POST(request) {
       );
     }
 
-    // Find subscription with matching email and null id
+    // Find subscription with matching email and null user_id
     const { data: subscription, error: fetchError } = await supabase
       .from('subscriptions')
       .select('*')
       .eq('email', normalizedEmail)
-      .is('id', null)
+      .is('user_id', null)
       .maybeSingle();
 
     console.log('Found subscription:', subscription);
@@ -54,7 +54,7 @@ export async function POST(request) {
     // Update subscription with user ID
     const { error: updateError } = await supabase
       .from('subscriptions')
-      .update({ id: userId })
+      .update({ user_id: userId })
       .eq('subscription_id', subscription.subscription_id);
 
     if (updateError) {

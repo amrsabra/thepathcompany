@@ -15,6 +15,7 @@ import {
   FiHeart
 } from 'react-icons/fi';
 import '../../styles/dashboard.scss';
+import { supabase } from '../../supabaseClient';
 
 const Dashboard = ({ user }) => {
   const [language, setLanguage] = useState('en');
@@ -83,6 +84,31 @@ const Dashboard = ({ user }) => {
       });
     }
   };
+
+  useEffect(() => {
+    const linkSubscription = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+      const user = session.user;
+      const normalizedEmail = user.email.trim().toLowerCase();
+
+      const { data: subData } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('email', normalizedEmail)
+        .is('user_id', null)
+        .maybeSingle();
+
+      if (subData) {
+        await supabase
+          .from('subscriptions')
+          .update({ user_id: user.id })
+          .eq('email', normalizedEmail)
+          .is('user_id', null);
+      }
+    };
+    linkSubscription();
+  }, []);
 
   // Mock user data - remove this when real user data is available
   const mockUser = {

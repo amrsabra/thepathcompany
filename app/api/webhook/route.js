@@ -101,7 +101,7 @@ async function handleCheckoutSessionCompleted(session) {
     start_date: safeToISOString(subscription.current_period_start),
     end_date: safeToISOString(subscription.current_period_end),
     created_at: new Date().toISOString(),
-    id: userId
+    user_id: userId
   };
 
   console.log('Inserting subscription data:', insertData);

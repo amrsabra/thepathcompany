@@ -117,6 +117,42 @@ const SubscriptionPlans = () => {
   }, [router]);
 
   useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event !== 'SIGNED_IN' || !session?.user) return;
+
+        const user = session.user;
+        const normalizedEmail = user.email.trim().toLowerCase();
+
+        // 1. Check for subscription
+        const { data: subData, error: subError } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('email', normalizedEmail)
+          .maybeSingle();
+
+        if (subError) return;
+
+        if (subData) {
+          // Link if needed
+          if (!subData.user_id) {
+            await supabase
+              .from('subscriptions')
+              .update({ user_id: user.id })
+              .eq('email', normalizedEmail)
+              .is('user_id', null);
+          }
+          window.location.href = '/dashboard';
+        } else {
+          window.location.href = '/plans';
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     // ✅ Force layout reflow and scroll reset
     document.body.style.display = 'none';
   

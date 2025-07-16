@@ -166,9 +166,9 @@ useEffect(() => {
       try {
         const { data, error } = await supabase
           .from('subscriptions')
-          .update({ id: user.id })
+          .update({ user_id: user.id })
           .eq('email', normalizedEmail)
-          .is('id', null)
+          .is('user_id', null)
           .select();
         if (error) {
           console.error('Subscription linking error:', error);
@@ -377,9 +377,9 @@ useEffect(() => {
 
             const { data, error } = await supabase
               .from('subscriptions')
-              .update({ id: session.user.id })
+              .update({ user_id: session.user.id })
               .eq('email', normalizedEmail)
-              .is('id', null)
+              .is('user_id', null)
               .select(); // fetch updated rows for logging
 
             if (error) {
