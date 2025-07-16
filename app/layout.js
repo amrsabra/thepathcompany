@@ -1,7 +1,5 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { useEffect } from 'react';
-import { supabase } from '../supabaseClient';
 import SubscriptionLinker from "./components/SubscriptionLinker";
 
 const inter = Inter({
