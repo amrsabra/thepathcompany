@@ -238,12 +238,28 @@ useEffect(() => {
           emailRedirectTo: `${window.location.origin}/plans`,
         },
       });
-  
+
       if (error) {
         console.error("Sign-up error:", error);
         setErrors({ submit: error.message });
         setIsLoading(false);
         return;
+      }
+
+      // Immediately link subscription after signup
+      const userId = data?.user?.id;
+      if (userId) {
+        const normalizedEmail = inputEmail.trim().toLowerCase();
+        const { error: linkError } = await supabase
+          .from('subscriptions')
+          .update({ user_id: userId })
+          .eq('email', normalizedEmail)
+          .is('user_id', null);
+        if (linkError) {
+          console.error('Error linking subscription after signup:', linkError);
+        } else {
+          console.log('Subscription linked after signup for:', normalizedEmail);
+        }
       }
   
       // If user came from payment flow, link subscription after successful signup
