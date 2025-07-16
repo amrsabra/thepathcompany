@@ -141,30 +141,17 @@ useEffect(() => {
 
       const user = session.user;
 
-      // Check if profile already exists
-      const { data: existingProfile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (!existingProfile && !profileError) {
-        const { error: insertError } = await supabase.from('profiles').insert([{
-          id: user.id,
-          username: user.user_metadata.full_name || user.email.split('@')[0],
-          first_name: user.user_metadata.given_name || '',
-          last_name: user.user_metadata.family_name || '',
-          date_of_birth: null,
-          stripe_customer: null,
-        }]);
-
-        if (insertError) {
-          console.error('❌ Failed to insert Google user into profiles:', insertError);
-        } else {
-          console.log('✅ Google user inserted into profiles.');
-        }
-      } else {
-        console.log('ℹ️ Google user already exists in profiles.');
+      // Always attempt to link any orphaned subscriptions for this email
+      try {
+        await supabase
+          .from('subscriptions')
+          .update({ id: user.id })
+          .eq('email', user.email)
+          .is('id', null);
+        // Optionally, log success/failure here
+        console.log('🔗 Subscription linking attempted on auth for', user.email);
+      } catch (linkError) {
+        console.error('Error linking subscription on auth:', linkError);
       }
     }
   );
