@@ -370,6 +370,17 @@ useEffect(() => {
     }
   };
 
+  useEffect(() => {
+    // Check for email from URL parameters (payment flow)
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailFromUrl = urlParams.get('email');
+    const successFromUrl = urlParams.get('success');
+    if (emailFromUrl && successFromUrl === 'true') {
+      setFormData(prev => ({ ...prev, email: emailFromUrl }));
+      setIsEmailFromPayment(true);
+    }
+  }, []);
+
   return (
     <div className="signup-page">
       <Header forceSolid={true} />
