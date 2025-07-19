@@ -61,22 +61,26 @@ const SubscriptionPlans = () => {
   }, [isLoading]);
 
   useEffect(() => {
+    // Synchronous check for logged-in user
+    const session = supabase.auth.session ? supabase.auth.session() : null;
+    if (!session || !session.user) {
+      setIsLoggedIn(false);
+      setIsLoading(false);
+      return;
+    }
+    // If logged in, run async profile logic
     const createProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         setUserEmail(user?.email || null);
         setIsLoggedIn(!!user);
-
         if (!user) {
           setIsLoading(false);
           return;
         }
-
         const pendingProfile = localStorage.getItem('pendingProfile');
-
         if (pendingProfile) {
           const profileData = JSON.parse(pendingProfile);
-
           const { error } = await supabase
             .from('profiles')
             .insert([
@@ -88,7 +92,6 @@ const SubscriptionPlans = () => {
                 created_at: new Date().toISOString(),
               }
             ]);
-
           if (error) {
             setProfileError('Error creating profile from pending: ' + error.message);
             console.error('Error creating profile from pending:', error);
@@ -102,7 +105,6 @@ const SubscriptionPlans = () => {
             .select('id')
             .eq('id', user.id)
             .maybeSingle();
-
           if (!existingProfile) {
             const { error: insertError } = await supabase.from('profiles').insert([
               {
@@ -116,7 +118,6 @@ const SubscriptionPlans = () => {
                 created_at: new Date().toISOString(),
               }
             ]);
-
             if (insertError) {
               setProfileError('Error inserting Google user profile: ' + insertError.message);
               console.error('Error inserting Google user profile:', insertError);
@@ -130,7 +131,6 @@ const SubscriptionPlans = () => {
         setIsLoading(false);
       }
     };
-
     createProfile();
   }, [router]);
 
