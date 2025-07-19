@@ -76,6 +76,9 @@ async function handleCheckoutSessionCompleted(session) {
   try {
     subscription = await stripe.subscriptions.retrieve(subscription_id);
     console.log('Fetched subscription from Stripe:', subscription);
+    // Log the period start and end
+    console.log('Stripe current_period_start:', subscription.current_period_start);
+    console.log('Stripe current_period_end:', subscription.current_period_end);
   } catch (err) {
     console.error('Error fetching subscription from Stripe:', err);
     throw err;
@@ -101,10 +104,11 @@ async function handleCheckoutSessionCompleted(session) {
     start_date: safeToISOString(subscription.current_period_start),
     end_date: safeToISOString(subscription.current_period_end),
     created_at: new Date().toISOString(),
-    user_id: userId
+    id: userId
   };
 
-  console.log('Inserting subscription data:', insertData);
+  // Log the data to be inserted
+  console.log('Prepared insertData for subscriptions:', insertData);
 
   const { error } = await supabase
     .from('subscriptions')
