@@ -278,82 +278,20 @@ useEffect(() => {
           console.log('Linking attempted after signup for:', normalizedEmail);
         }
       }
-  
+
+      // Immediately show confirmation message
       setShowConfirmation(true);
+      setIsLoading(false);
     } catch (err) {
       console.error("Unexpected error during sign-up:", err);
       setErrors({ submit: 'Unexpected error occurred. Please try again.' });
-    } finally {
       setIsLoading(false);
     }
   };    
 
-  useEffect(() => {
-    if (!signupSuccess) return;
-    let interval;
-    let timeout;
-    interval = setInterval(async () => {
-      const { data, error } = await supabase.auth.refreshSession();
-      const session = data?.session;
-      if (session?.user?.email_confirmed_at) {
-        setEmailConfirmed(true);
-        clearInterval(interval);
-        clearTimeout(timeout);
-        // After confirmation, check for subscription and redirect
-        const user = session.user;
-        // Link subscription if from payment flow
-        if (isEmailFromPayment) {
-          try {
-            const response = await fetch('/api/link-subscription-to-profile', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: user.email, userId: user.id })
-            });
-            if (response.ok) {
-              console.log('Subscription linked successfully');
-            } else {
-              console.error('Failed to link subscription');
-            }
-          } catch (linkError) {
-            console.error('Error linking subscription:', linkError);
-          }
-        }
-        // Check for active subscription
-        const { data: subData, error: subError } = await supabase
-          .from('subscriptions')
-          .select('id')
-          .eq('email', user.email)
-          .eq('status', 'active')
-          .maybeSingle();
-        if (subData && subData.id) {
-          window.location.href = '/dashboard';
-        } else {
-          window.location.href = '/plans';
-        }
-      }
-    }, 3000);
-    // Timeout after 2 minutes
-    timeout = setTimeout(() => {
-      setConfirmationTimeout(true);
-      clearInterval(interval);
-    }, 120000);
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [signupSuccess, isEmailFromPayment]);
+  // Remove confirmationTimeout, resend, and polling logic
 
   useEffect(() => {
-    // Check for email from URL parameters (payment flow)
-    const urlParams = new URLSearchParams(window.location.search);
-    const emailFromUrl = urlParams.get('email');
-    const successFromUrl = urlParams.get('success');
-    
-    if (emailFromUrl && successFromUrl === 'true') {
-      setFormData(prev => ({ ...prev, email: emailFromUrl }));
-      setIsEmailFromPayment(true);
-    }
-
     const insertProfileIfNeeded = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const pending = localStorage.getItem('pendingProfile');
@@ -461,39 +399,13 @@ useEffect(() => {
           {showConfirmation ? (
             <div className="confirmation-message">
               <Image src="/logoicon.png" alt="Logo" width={80} height={80} className="logo" />
-              {!emailConfirmed ? (
-                <>
-                  <h2>Check Your Email</h2>
-                  <p>Please check your email to confirm your account.<br />After confirming, you will be redirected to choose your plan.</p>
-                  {confirmationTimeout && (
-                    <div style={{ marginTop: 20 }}>
-                      <p style={{ color: 'red' }}>
-                        Still waiting for confirmation? If you did not receive the email, you can resend it or go back to the signup form.
-                      </p>
-                      <button
-                        onClick={handleResendConfirmation}
-                        disabled={resendLoading}
-                        style={{ marginTop: 10, padding: '8px 20px', borderRadius: 8, background: '#FFD600', color: '#181818', border: 'none', fontWeight: 600, cursor: resendLoading ? 'not-allowed' : 'pointer' }}
-                      >
-                        {resendLoading ? 'Resending...' : 'Resend Confirmation Email'}
-                      </button>
-                      {resendSuccess && <p style={{ color: 'green', marginTop: 8 }}>Confirmation email resent! Please check your inbox.</p>}
-                      {resendError && <p style={{ color: 'red', marginTop: 8 }}>{resendError}</p>}
-                      <button
-                        onClick={() => { setShowConfirmation(false); setConfirmationTimeout(false); }}
-                        style={{ marginTop: 10, marginLeft: 10, padding: '8px 20px', borderRadius: 8, background: '#232323', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer' }}
-                      >
-                        Back to Signup
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <h2>Email Confirmed!</h2>
-                  <p>You can close this tab now.</p>
-                </>
-              )}
+              <>
+                <h2>Check Your Email</h2>
+                <p>Please check your email to confirm your account.<br />After confirming, you will be redirected to choose your plan.</p>
+                <p style={{ marginTop: 20, color: '#bbb' }}>
+                  Didn’t receive the email? Check your spam folder or <a href="mailto:support@thepathcompany.com" style={{ color: '#FFD600' }}>contact support</a>.
+                </p>
+              </>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="signup-form">
