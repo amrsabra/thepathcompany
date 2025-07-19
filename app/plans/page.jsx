@@ -45,12 +45,27 @@ const SubscriptionPlans = () => {
   const manualEmailRef = useRef();
   const [stripeError, setStripeError] = useState('');
   const [userEmail, setUserEmail] = useState(null);
+  const [profileError, setProfileError] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Timeout fallback for loading
+  useEffect(() => {
+    if (isLoading) {
+      const timeout = setTimeout(() => {
+        setLoadingTimeout(true);
+        setIsLoading(false);
+      }, 10000); // 10 seconds
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const createProfile = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         setUserEmail(user?.email || null);
+        setIsLoggedIn(!!user);
 
         if (!user) {
           setIsLoading(false);
@@ -75,6 +90,7 @@ const SubscriptionPlans = () => {
             ]);
 
           if (error) {
+            setProfileError('Error creating profile from pending: ' + error.message);
             console.error('Error creating profile from pending:', error);
           } else {
             localStorage.removeItem('pendingProfile');
@@ -102,11 +118,13 @@ const SubscriptionPlans = () => {
             ]);
 
             if (insertError) {
+              setProfileError('Error inserting Google user profile: ' + insertError.message);
               console.error('Error inserting Google user profile:', insertError);
             }
           }
         }
       } catch (error) {
+        setProfileError('Error in profile creation: ' + (error.message || error.toString()));
         console.error('Error in profile creation:', error);
       } finally {
         setIsLoading(false);
@@ -230,6 +248,22 @@ const SubscriptionPlans = () => {
           <div className="loading-spinner">
             <div className="spinner"></div>
             <p>Setting up your account...</p>
+            {loadingTimeout && (
+              <p style={{ color: 'red', marginTop: 12 }}>
+                This is taking longer than expected. Please refresh or try again later.
+              </p>
+            )}
+            {profileError && (
+              <p style={{ color: 'red', marginTop: 12 }}>{profileError}</p>
+            )}
+            {!isLoggedIn && !profileError && (
+              <button
+                style={{ marginTop: 16, padding: '8px 20px', borderRadius: 8, background: '#FFD600', color: '#181818', border: 'none', fontWeight: 600, cursor: 'pointer' }}
+                onClick={() => router.push('/login')}
+              >
+                Log In
+              </button>
+            )}
           </div>
         </div>
       </div>
