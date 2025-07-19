@@ -256,14 +256,6 @@ const SubscriptionPlans = () => {
             {profileError && (
               <p style={{ color: 'red', marginTop: 12 }}>{profileError}</p>
             )}
-            {!isLoggedIn && !profileError && (
-              <button
-                style={{ marginTop: 16, padding: '8px 20px', borderRadius: 8, background: '#FFD600', color: '#181818', border: 'none', fontWeight: 600, cursor: 'pointer' }}
-                onClick={() => router.push('/login')}
-              >
-                Log In
-              </button>
-            )}
           </div>
         </div>
       </div>
