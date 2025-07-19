@@ -45,6 +45,10 @@ const SignUp = () => {
   const [emailConfirmed, setEmailConfirmed] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isEmailFromPayment, setIsEmailFromPayment] = useState(false);
+  const [confirmationTimeout, setConfirmationTimeout] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
+  const [resendError, setResendError] = useState('');
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -287,13 +291,14 @@ useEffect(() => {
   useEffect(() => {
     if (!signupSuccess) return;
     let interval;
+    let timeout;
     interval = setInterval(async () => {
       const { data, error } = await supabase.auth.refreshSession();
       const session = data?.session;
       if (session?.user?.email_confirmed_at) {
         setEmailConfirmed(true);
         clearInterval(interval);
-
+        clearTimeout(timeout);
         // After confirmation, check for subscription and redirect
         const user = session.user;
         // Link subscription if from payment flow
@@ -327,7 +332,15 @@ useEffect(() => {
         }
       }
     }, 3000);
-    return () => clearInterval(interval);
+    // Timeout after 2 minutes
+    timeout = setTimeout(() => {
+      setConfirmationTimeout(true);
+      clearInterval(interval);
+    }, 120000);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [signupSuccess, isEmailFromPayment]);
 
   useEffect(() => {
@@ -400,6 +413,25 @@ useEffect(() => {
     insertProfileIfNeeded();
   }, []);
 
+  // Resend confirmation email handler
+  const handleResendConfirmation = async () => {
+    setResendLoading(true);
+    setResendSuccess(false);
+    setResendError('');
+    try {
+      const { error } = await supabase.auth.resend({ type: 'signup', email: formData.email });
+      if (error) {
+        setResendError('Failed to resend confirmation email. Please try again later.');
+      } else {
+        setResendSuccess(true);
+      }
+    } catch (err) {
+      setResendError('Unexpected error. Please try again.');
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   return (
     <div className="signup-page">
       <Header forceSolid={true} />
@@ -433,6 +465,28 @@ useEffect(() => {
                 <>
                   <h2>Check Your Email</h2>
                   <p>Please check your email to confirm your account.<br />After confirming, you will be redirected to choose your plan.</p>
+                  {confirmationTimeout && (
+                    <div style={{ marginTop: 20 }}>
+                      <p style={{ color: 'red' }}>
+                        Still waiting for confirmation? If you did not receive the email, you can resend it or go back to the signup form.
+                      </p>
+                      <button
+                        onClick={handleResendConfirmation}
+                        disabled={resendLoading}
+                        style={{ marginTop: 10, padding: '8px 20px', borderRadius: 8, background: '#FFD600', color: '#181818', border: 'none', fontWeight: 600, cursor: resendLoading ? 'not-allowed' : 'pointer' }}
+                      >
+                        {resendLoading ? 'Resending...' : 'Resend Confirmation Email'}
+                      </button>
+                      {resendSuccess && <p style={{ color: 'green', marginTop: 8 }}>Confirmation email resent! Please check your inbox.</p>}
+                      {resendError && <p style={{ color: 'red', marginTop: 8 }}>{resendError}</p>}
+                      <button
+                        onClick={() => { setShowConfirmation(false); setConfirmationTimeout(false); }}
+                        style={{ marginTop: 10, marginLeft: 10, padding: '8px 20px', borderRadius: 8, background: '#232323', color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer' }}
+                      >
+                        Back to Signup
+                      </button>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
