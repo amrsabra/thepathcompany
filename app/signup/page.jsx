@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { 
@@ -49,6 +49,8 @@ const SignUp = () => {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
   const [resendError, setResendError] = useState('');
+  const [globalError, setGlobalError] = useState('');
+  const formRef = useRef(null);
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -205,28 +207,37 @@ useEffect(() => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
-  
+    setGlobalError('');
+    if (!validate()) {
+      // Scroll to first error field
+      const firstErrorKey = Object.keys(errors)[0];
+      if (firstErrorKey && formRef.current) {
+        const el = formRef.current.querySelector(`[name="${firstErrorKey}"]`);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
     setIsLoading(true);
     setErrors({});
-  
+    let didTimeout = false;
+    const timeout = setTimeout(() => {
+      didTimeout = true;
+      setIsLoading(false);
+      setGlobalError('Signup request timed out. Please check your connection and try again.');
+    }, 10000);
     try {
       const inputEmail = formData.email.trim().toLowerCase();
-  
-      // Step 1: Check if email already exists in profiles
       const { data: existingProfile } = await supabase
         .from('profiles')
         .select('email')
         .ilike('email', inputEmail)
         .maybeSingle();
-  
       if (existingProfile) {
         setErrors({ email: 'Email is already registered.' });
         setIsLoading(false);
+        clearTimeout(timeout);
         return;
       }
-  
-      // Step 2: Sign up the user in Supabase Auth
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: inputEmail,
         password: formData.password,
@@ -234,21 +245,16 @@ useEffect(() => {
           emailRedirectTo: `${window.location.origin}/plans`,
         },
       });
-  
       if (signUpError) {
         throw signUpError;
       }
-  
       if (!data.user) {
         throw new Error("Sign up successful, but no user data was returned. Please contact support.");
       }
-      
-      // Step 3: Insert the new user's data into the profiles table
       const monthIndex = months.indexOf(formData.birthMonth);
       const monthNum = (monthIndex + 1).toString().padStart(2, '0');
       const dayNum = formData.birthDay.toString().padStart(2, '0');
       const dob = `${formData.birthYear}-${monthNum}-${dayNum}`;
-
       const { error: profileInsertError } = await supabase
         .from('profiles')
         .insert([{
@@ -259,30 +265,25 @@ useEffect(() => {
             last_name: formData.lastName,
             date_of_birth: dob,
         }]);
-
       if (profileInsertError) {
-        console.error("Profile insert failed:", profileInsertError);
         throw new Error(`Your account was created, but we couldn't save your profile. Please contact support.`);
       }
-
-      // Step 4: Link subscription if one exists for this email
       const { error: linkError } = await supabase
         .from('subscriptions')
         .update({ user_id: data.user.id })
         .eq('email', data.user.email)
         .is('user_id', null);
-        
       if (linkError) {
         console.error('Failed to link subscription post-signup:', linkError);
       }
-
-      // Step 5: Show confirmation message
       setShowConfirmation(true);
-
     } catch (err) {
-      setErrors({ submit: err.message || 'An unexpected error occurred.' });
+      if (!didTimeout) {
+        setGlobalError(err.message || 'An unexpected error occurred.');
+      }
     } finally {
       setIsLoading(false);
+      clearTimeout(timeout);
     }
   };    
 
@@ -361,7 +362,12 @@ useEffect(() => {
               </>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="signup-form">
+            <form onSubmit={handleSubmit} className="signup-form" ref={formRef}>
+              {globalError && (
+                <div style={{ color: 'white', background: 'red', padding: 12, borderRadius: 8, marginBottom: 16, textAlign: 'center', fontWeight: 600 }}>
+                  {globalError}
+                </div>
+              )}
               <div className="form-group">
                 <div className="name-fields">
                   <input
