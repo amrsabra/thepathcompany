@@ -227,13 +227,16 @@ useEffect(() => {
     }, 10000);
     try {
       const inputEmail = formData.email.trim().toLowerCase();
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('email')
-        .ilike('email', inputEmail)
-        .maybeSingle();
-      if (existingProfile) {
-        setErrors({ email: 'Email is already registered.' });
+      // Check if email exists in Supabase Auth
+      const { data: userList, error: userListError } = await supabase.auth.admin.listUsers({ email: inputEmail });
+      if (userListError) {
+        setGlobalError('Error checking email. Please try again.');
+        setIsLoading(false);
+        clearTimeout(timeout);
+        return;
+      }
+      if (userList && userList.users && userList.users.length > 0) {
+        setErrors({ email: 'Email already exists.' });
         setIsLoading(false);
         clearTimeout(timeout);
         return;
