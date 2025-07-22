@@ -153,12 +153,12 @@ const SubscriptionPlans = () => {
 
         if (subData) {
           // Link if needed
-          if (!subData.user_id) {
+          if (!subData.id) {
             await supabase
               .from('subscriptions')
-              .update({ user_id: user.id })
+              .update({ id: user.id })
               .eq('email', normalizedEmail)
-              .is('user_id', null);
+              .is('id', null);
           }
           window.location.href = '/dashboard';
         } else {

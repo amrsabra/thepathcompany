@@ -96,15 +96,15 @@ const Dashboard = ({ user }) => {
         .from('subscriptions')
         .select('*')
         .eq('email', normalizedEmail)
-        .is('user_id', null)
+        .is('id', null)
         .maybeSingle();
 
       if (subData) {
         await supabase
           .from('subscriptions')
-          .update({ user_id: user.id })
+          .update({ id: user.id })
           .eq('email', normalizedEmail)
-          .is('user_id', null);
+          .is('id', null);
       }
     };
     linkSubscription();

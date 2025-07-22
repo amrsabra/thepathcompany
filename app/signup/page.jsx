@@ -152,9 +152,9 @@ useEffect(() => {
       // Immediately attempt to link subscription after Google OAuth signup
       const { error: linkError } = await supabase
         .from('subscriptions')
-        .update({ user_id: user.id })
+        .update({ id: user.id })
         .eq('email', normalizedEmail)
-        .is('user_id', null);
+        .is('id', null);
       if (linkError) {
         console.error('Linking error after Google OAuth signup:', linkError);
       } else {
@@ -185,9 +185,9 @@ useEffect(() => {
       try {
         const { data, error } = await supabase
           .from('subscriptions')
-          .update({ user_id: user.id })
+          .update({ id: user.id })
           .eq('email', normalizedEmail)
-          .is('user_id', null)
+          .is('id', null)
           .select();
         if (error) {
           console.error('Subscription linking error:', error);
@@ -266,9 +266,9 @@ useEffect(() => {
       // Attempt to link subscription post-signup
       const { error: linkError } = await supabase
         .from('subscriptions')
-        .update({ user_id: data.user.id })
+        .update({ id: data.user.id })
         .eq('email', data.user.email)
-        .is('user_id', null);
+        .is('id', null);
       if (linkError) {
         // This is not a critical error, so we just log it.
         console.error('Non-critical error: Failed to link subscription post-signup:', linkError);
