@@ -238,43 +238,40 @@ useEffect(() => {
         clearTimeout(timeout);
         return;
       }
+      const monthIndex = months.indexOf(formData.birthMonth);
+      const monthNum = (monthIndex + 1).toString().padStart(2, '0');
+      const dayNum = formData.birthDay.toString().padStart(2, '0');
+      const dob = `${formData.birthYear}-${monthNum}-${dayNum}`;
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: inputEmail,
         password: formData.password,
         options: {
+          data: {
+            username: formData.username,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            date_of_birth: dob,
+          },
           emailRedirectTo: `${window.location.origin}/plans`,
         },
       });
+      if (didTimeout) return;
       if (signUpError) {
         throw signUpError;
       }
       if (!data.user) {
         throw new Error("Sign up successful, but no user data was returned. Please contact support.");
       }
-      const monthIndex = months.indexOf(formData.birthMonth);
-      const monthNum = (monthIndex + 1).toString().padStart(2, '0');
-      const dayNum = formData.birthDay.toString().padStart(2, '0');
-      const dob = `${formData.birthYear}-${monthNum}-${dayNum}`;
-      const { error: profileInsertError } = await supabase
-        .from('profiles')
-        .insert([{
-            id: data.user.id,
-            email: data.user.email,
-            username: formData.username,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            date_of_birth: dob,
-        }]);
-      if (profileInsertError) {
-        throw new Error(`Your account was created, but we couldn't save your profile. Please contact support.`);
-      }
+      // Profile is now created by a DB trigger. No need to insert it from the client.
+      // Attempt to link subscription post-signup
       const { error: linkError } = await supabase
         .from('subscriptions')
         .update({ user_id: data.user.id })
         .eq('email', data.user.email)
         .is('user_id', null);
       if (linkError) {
-        console.error('Failed to link subscription post-signup:', linkError);
+        // This is not a critical error, so we just log it.
+        console.error('Non-critical error: Failed to link subscription post-signup:', linkError);
       }
       setShowConfirmation(true);
     } catch (err) {
@@ -291,8 +288,33 @@ useEffect(() => {
   // The useEffect that previously handled this is no longer needed.
 
   useEffect(() => {
-    // ... existing onAuthStateChange logic for Google Sign-In ...
-  }, []);
+    // After signup and email confirmation, insert profile if it doesn't exist
+    const insertProfileIfNeeded = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      // Check if profile already exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (!existingProfile) {
+        // Insert profile
+        const { error } = await supabase.from('profiles').insert([{
+          id: user.id,
+          email: user.email,
+          username: user.user_metadata?.username || user.email.split('@')[0],
+          first_name: user.user_metadata?.first_name || '',
+          last_name: user.user_metadata?.last_name || '',
+          date_of_birth: user.user_metadata?.date_of_birth || null,
+        }]);
+        if (error) {
+          console.error('Profile insert error:', error);
+        }
+      }
+    };
+    insertProfileIfNeeded();
+  }, [showConfirmation]);
 
   // Resend confirmation email handler
   const handleResendConfirmation = async () => {
