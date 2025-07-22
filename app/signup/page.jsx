@@ -227,20 +227,7 @@ useEffect(() => {
     }, 10000);
     try {
       const inputEmail = formData.email.trim().toLowerCase();
-      // Check if email exists in Supabase Auth
-      const { data: userList, error: userListError } = await supabase.auth.admin.listUsers({ email: inputEmail });
-      if (userListError) {
-        setGlobalError('Error checking email. Please try again.');
-        setIsLoading(false);
-        clearTimeout(timeout);
-        return;
-      }
-      if (userList && userList.users && userList.users.length > 0) {
-        setErrors({ email: 'Email already exists.' });
-        setIsLoading(false);
-        clearTimeout(timeout);
-        return;
-      }
+      // Remove admin.listUsers check. Attempt signup directly.
       const monthIndex = months.indexOf(formData.birthMonth);
       const monthNum = (monthIndex + 1).toString().padStart(2, '0');
       const dayNum = formData.birthDay.toString().padStart(2, '0');
@@ -260,7 +247,17 @@ useEffect(() => {
       });
       if (didTimeout) return;
       if (signUpError) {
-        throw signUpError;
+        if (
+          signUpError.message?.toLowerCase().includes('user already registered') ||
+          (signUpError.message?.toLowerCase().includes('email') && signUpError.message?.toLowerCase().includes('exists'))
+        ) {
+          setErrors({ email: 'Email already exists.' });
+        } else {
+          setGlobalError(signUpError.message || 'Unexpected error occurred.');
+        }
+        setIsLoading(false);
+        clearTimeout(timeout);
+        return;
       }
       if (!data.user) {
         throw new Error("Sign up successful, but no user data was returned. Please contact support.");
