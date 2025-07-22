@@ -349,28 +349,45 @@ useEffect(() => {
   return (
     <div className="signup-page">
       <Header forceSolid={true} />
-      <div className="signup-container">
-        <div className="left-column">
-          <div className="signup-header">
-            <h1>Create Your Account</h1>
-            <p>Join our community and start your journey</p>
+      <div
+        className="signup-container"
+        style={showConfirmation ? {
+          maxWidth: 480,
+          margin: '80px auto',
+          width: '100%',
+          minHeight: '420px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 32px rgba(0,0,0,0.18)',
+          borderRadius: 24,
+          background: 'rgba(20,20,30,0.95)'
+        } : {}}
+      >
+        {/* Only show left column when not in confirmation step */}
+        {!showConfirmation && (
+          <div className="left-column">
+            <div className="signup-header">
+              <h1>Create Your Account</h1>
+              <p>Join our community and start your journey</p>
+            </div>
+            <div className="social-signup">
+              <button 
+                type="button" 
+                className="social-button" 
+                onClick={handleGoogleSignUp}
+                disabled={isGoogleLoading}
+              >
+                <FcGoogle size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+                {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
+              </button>
+              {errors.google && <span className="error-message">{errors.google}</span>}
+            </div>
+            <div className="divider">
+              <span>or continue with email</span>
+            </div>
           </div>
-          <div className="social-signup">
-            <button 
-              type="button" 
-              className="social-button" 
-              onClick={handleGoogleSignUp}
-              disabled={isGoogleLoading}
-            >
-              <FcGoogle size={20} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-              {isGoogleLoading ? 'Connecting...' : 'Continue with Google'}
-            </button>
-            {errors.google && <span className="error-message">{errors.google}</span>}
-          </div>
-          <div className="divider">
-            <span>or continue with email</span>
-          </div>
-        </div>
+        )}
         <div className="right-column">
           {showConfirmation ? (
             <div className="confirmation-message">
