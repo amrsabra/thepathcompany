@@ -122,7 +122,7 @@ async function handleCheckoutSessionCompleted(session) {
     start_date: startDate,
     end_date: endDate,
     created_at: new Date().toISOString(),
-    user_id: userId // <-- use user_id, not id
+    id: userId
   };
 
   // Log the data to be inserted
