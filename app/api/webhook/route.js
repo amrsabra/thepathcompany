@@ -96,15 +96,33 @@ async function handleCheckoutSessionCompleted(session) {
     userId = profile.id;
   }
 
+  // If start_date or end_date is null, set them based on plan
+  let startDate = safeToISOString(subscription.current_period_start);
+  let endDate = safeToISOString(subscription.current_period_end);
+  if (!startDate) {
+    startDate = new Date().toISOString();
+  }
+  if (!endDate) {
+    if (plan === 'pro_monthly') {
+      const d = new Date(startDate);
+      d.setMonth(d.getMonth() + 1);
+      endDate = d.toISOString();
+    } else if (plan === 'pro_yearly') {
+      const d = new Date(startDate);
+      d.setFullYear(d.getFullYear() + 1);
+      endDate = d.toISOString();
+    }
+  }
+
   const insertData = {
     subscription_id: subscription.id,
     email: email,
     subscription_plan: plan,
     status: subscription.status,
-    start_date: safeToISOString(subscription.current_period_start),
-    end_date: safeToISOString(subscription.current_period_end),
+    start_date: startDate,
+    end_date: endDate,
     created_at: new Date().toISOString(),
-    id: userId // <-- use id, not id
+    user_id: userId // <-- use user_id, not id
   };
 
   // Log the data to be inserted
