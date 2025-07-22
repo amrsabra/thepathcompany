@@ -25,7 +25,7 @@ const Header = ({ forceSolid = false }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [language, setLanguage] = useState('en');
   const router = useRouter();
-  const [userSession, setUserSession] = useState(null);
+  const [user, setUser] = useState(null);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   // ✅ Ensure isScrolled reflects the passed forceSolid prop
@@ -46,15 +46,17 @@ const Header = ({ forceSolid = false }) => {
   
 
   useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUserSession(session);
-    };
-    getSession();
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserSession(session);
+    // Get session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
     });
-    return () => { listener?.subscription?.unsubscribe(); };
+    // Listen for auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => {
+      listener?.subscription?.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -117,14 +119,14 @@ const Header = ({ forceSolid = false }) => {
           </form>
           <div className="vertical-separator" />
           <div className="auth-buttons">
-            {userSession && userSession.user && userSession.user.email_confirmed_at ? (
+            {user && user.email_confirmed_at ? (
               <div className="profile-dropdown-container">
-                <div className="profile-icon" title={userSession.user.email} onClick={() => setProfileDropdownOpen(prev => !prev)}>
+                <div className="profile-icon" title={user.email} onClick={() => setProfileDropdownOpen(prev => !prev)}>
                   <FiUser size={22} />
                 </div>
                 {profileDropdownOpen && (
                   <div className="profile-dropdown-menu">
-                    <div className="profile-email">{userSession.user.email}</div>
+                    <div className="profile-email">{user.email}</div>
                     <Link href="/profile" className="profile-link">
                       <FiUser size={16} />
                       Profile
