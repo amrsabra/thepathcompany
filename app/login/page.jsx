@@ -97,7 +97,19 @@ const Login = () => {
       if (error) {
         setErrors({ password: 'Incorrect email or password' });
       } else if (data?.session) {
-        router.push('/');
+        // Wait for session to be set, then reload or redirect
+        window.location.href = '/'; // Use full reload to ensure session is available everywhere
+      } else {
+        // Fallback: listen for session change and reload
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+          if (event === 'SIGNED_IN' && session) {
+            window.location.href = '/';
+          }
+        });
+        // Optionally, set a timeout fallback
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
       }
     } catch (err) {
       console.error('Login error:', err);
