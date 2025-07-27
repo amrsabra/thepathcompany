@@ -432,41 +432,42 @@ const SubscriptionPlans = () => {
             {/* Only show the subscribe button if the email prompt is NOT open */}
             {!showEmailPrompt && (
               <button
-                className="subscribe-btn"
-                onClick={async () => {
-                  setStripeError('');
-                
-                  if (userEmail) {
-                    // STEP 1: check if email already subscribed
-                    const exists = await checkIfEmailHasSubscription(userEmail);
-                
-                    // STEP 2: if yes → show error & stop
-                    if (exists) {
-                      setStripeError('This email already has a subscription.');
-                      return; // ❗ STOP here, do NOT open Stripe
-                    }
-                
-                    // STEP 3: if not → go to Stripe
-                    await handleStripeCheckout(userEmail);
-                  } else {
-                    setShowEmailPrompt(true);
-                    setTimeout(() => manualEmailRef.current?.focus(), 100);
-                  }
-                }}
-                            
-                disabled={stripeLoading}
-              >
-                {stripeLoading ? (
-                  <>
-                    <span className="spinner" style={{ marginRight: 8 }}></span>
-                    Redirecting to Stripe...
-                  </>
-                ) : (
-                  <>
-                    <FiZap /> Get Premium Access
-                  </>
-                )}
-              </button>
+            className="subscribe-btn"
+            onClick={async () => {
+              setStripeError('');
+
+              const emailToUse = userEmail || manualEmail;
+
+              if (!emailToUse) {
+                // If no email yet (guest without prompt), show prompt
+                setShowEmailPrompt(true);
+                setTimeout(() => manualEmailRef.current?.focus(), 100);
+                return;
+              }
+
+              const exists = await checkIfEmailHasSubscription(emailToUse);
+
+              if (exists) {
+                setStripeError('This email already has a subscription.');
+                return;
+              }
+
+              // At this point, we have a verified email and it's safe to go to Stripe
+              await handleStripeCheckout(emailToUse);
+            }}
+            disabled={stripeLoading}
+          >
+            {stripeLoading ? (
+              <>
+                <span className="spinner" style={{ marginRight: 8 }}></span>
+                Redirecting to Stripe...
+              </>
+            ) : (
+              <>
+                <FiZap /> Get Premium Access
+              </>
+            )}
+          </button>
             )}
             {stripeError && <div style={{ color: 'red', marginTop: 8 }}>{stripeError}</div>}
             {showEmailPrompt && (
