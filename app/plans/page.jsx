@@ -435,26 +435,25 @@ const SubscriptionPlans = () => {
             className="subscribe-btn"
             onClick={async () => {
               setStripeError('');
-
-              const emailToUse = userEmail || manualEmail;
-
-              if (!emailToUse) {
-                // If no email yet (guest without prompt), show prompt
-                setShowEmailPrompt(true);
-                setTimeout(() => manualEmailRef.current?.focus(), 100);
+            
+              // ✅ If user is logged in and email is available, use it directly
+              if (isLoggedIn && userEmail) {
+                const exists = await checkIfEmailHasSubscription(userEmail);
+            
+                if (exists) {
+                  setStripeError('This email already has a subscription.');
+                  return;
+                }
+            
+                await handleStripeCheckout(userEmail);
                 return;
               }
-
-              const exists = await checkIfEmailHasSubscription(emailToUse);
-
-              if (exists) {
-                setStripeError('This email already has a subscription.');
-                return;
-              }
-
-              // At this point, we have a verified email and it's safe to go to Stripe
-              await handleStripeCheckout(emailToUse);
+            
+              // 👤 Guest (not logged in): ask for email
+              setShowEmailPrompt(true);
+              setTimeout(() => manualEmailRef.current?.focus(), 100);
             }}
+                        
             disabled={stripeLoading}
           >
             {stripeLoading ? (
