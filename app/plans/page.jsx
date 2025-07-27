@@ -278,6 +278,22 @@ const SubscriptionPlans = () => {
     );
   }
 
+  const checkIfEmailHasSubscription = async (emailToCheck) => {
+    const { data, error } = await supabase
+      .from('subscriptions')
+      .select('email')
+      .eq('email', emailToCheck.trim().toLowerCase())
+      .maybeSingle();
+  
+    if (error) {
+      console.error('Error checking subscription:', error.message);
+      return false;
+    }
+  
+    return !!data;
+  };
+  
+
   // Stripe Checkout handler
   const handleStripeCheckout = async (email) => {
     setStripeLoading(true);
@@ -416,13 +432,19 @@ const SubscriptionPlans = () => {
               <button
                 className="subscribe-btn"
                 onClick={async () => {
+                  setStripeError('');
                   if (userEmail) {
+                    const exists = await checkIfEmailHasSubscription(userEmail);
+                    if (exists) {
+                      setStripeError('This email already has a subscription.');
+                      return;
+                    }
                     handleStripeCheckout(userEmail);
                   } else {
                     setShowEmailPrompt(true);
                     setTimeout(() => manualEmailRef.current?.focus(), 100);
                   }
-                }}
+                }}                
                 disabled={stripeLoading}
               >
                 {stripeLoading ? (
@@ -498,9 +520,16 @@ const SubscriptionPlans = () => {
                   }}
                   onClick={async () => {
                     if (!manualEmail) return;
+                  
+                    const exists = await checkIfEmailHasSubscription(manualEmail);
+                    if (exists) {
+                      setStripeError('This email already has a subscription.');
+                      return;
+                    }
+                  
                     setShowEmailPrompt(false);
                     handleStripeCheckout(manualEmail);
-                  }}
+                  }}                  
                   disabled={!manualEmail || stripeLoading}
                   aria-label="Continue"
                 >
