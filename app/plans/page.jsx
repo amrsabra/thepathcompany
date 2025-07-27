@@ -279,11 +279,14 @@ const SubscriptionPlans = () => {
   }
 
   const checkIfEmailHasSubscription = async (emailToCheck) => {
+    const normalizedEmail = emailToCheck.trim().toLowerCase();
     const { data, error } = await supabase
       .from('subscriptions')
       .select('email')
-      .eq('email', emailToCheck.trim().toLowerCase())
+      .eq('email', normalizedEmail)
       .maybeSingle();
+  
+    console.log('[CHECK]', normalizedEmail, '→', data, error); // DEBUG
   
     if (error) {
       console.error('Error checking subscription:', error.message);
@@ -291,8 +294,7 @@ const SubscriptionPlans = () => {
     }
   
     return !!data;
-  };
-  
+  };  
 
   // Stripe Checkout handler
   const handleStripeCheckout = async (email) => {
