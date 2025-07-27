@@ -433,18 +433,25 @@ const SubscriptionPlans = () => {
                 className="subscribe-btn"
                 onClick={async () => {
                   setStripeError('');
+                
                   if (userEmail) {
+                    // STEP 1: check if email already subscribed
                     const exists = await checkIfEmailHasSubscription(userEmail);
+                
+                    // STEP 2: if yes → show error & stop
                     if (exists) {
                       setStripeError('This email already has a subscription.');
-                      return;
+                      return; // ❗ STOP here, do NOT open Stripe
                     }
-                    handleStripeCheckout(userEmail);
+                
+                    // STEP 3: if not → go to Stripe
+                    await handleStripeCheckout(userEmail);
                   } else {
                     setShowEmailPrompt(true);
                     setTimeout(() => manualEmailRef.current?.focus(), 100);
                   }
-                }}                
+                }}
+                            
                 disabled={stripeLoading}
               >
                 {stripeLoading ? (
@@ -521,15 +528,20 @@ const SubscriptionPlans = () => {
                   onClick={async () => {
                     if (!manualEmail) return;
                   
+                    // STEP 1: check if email already subscribed
                     const exists = await checkIfEmailHasSubscription(manualEmail);
+                    
+                    // STEP 2: if yes → show error & stop
                     if (exists) {
                       setStripeError('This email already has a subscription.');
-                      return;
+                      return; // ❗ STOP here
                     }
                   
+                    // STEP 3: if not → continue to Stripe
                     setShowEmailPrompt(false);
-                    handleStripeCheckout(manualEmail);
-                  }}                  
+                    await handleStripeCheckout(manualEmail);
+                  }}
+                                   
                   disabled={!manualEmail || stripeLoading}
                   aria-label="Continue"
                 >
