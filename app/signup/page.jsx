@@ -227,6 +227,41 @@ useEffect(() => {
     }, 10000);
     try {
       const inputEmail = formData.email.trim().toLowerCase();
+      // Check if email already exists in profiles table
+      console.log('Checking if email exists in profiles:', inputEmail);
+      
+      // First, let's see all profiles to debug
+      const { data: allProfiles, error: allProfilesError } = await supabase
+        .from('profiles')
+        .select('email');
+      console.log('All profiles in database:', allProfiles);
+      console.log('All profiles error:', allProfilesError);
+      
+      // Try with different RLS context
+      const { data: allProfiles2, error: allProfilesError2 } = await supabase
+        .from('profiles')
+        .select('*')
+        .limit(10);
+      
+      const { data: existingProfile, error: profileCheckError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', inputEmail)
+        .maybeSingle();
+      console.log('Profile check result:', { existingProfile, profileCheckError });
+      console.log('Looking for email:', `"${inputEmail}"`);
+      if (profileCheckError) {
+        console.error('Profile check error:', profileCheckError);
+        throw new Error('Error checking existing profiles. Please try again.');
+      }
+      if (existingProfile) {
+        console.log('Profile already exists for email:', inputEmail);
+        setErrors({ email: 'This email already exists.' });
+        setIsLoading(false);
+        clearTimeout(timeout);
+        return;
+      }
+      console.log('No existing profile found, proceeding with signup');
       // Remove admin.listUsers check. Attempt signup directly.
       const monthIndex = months.indexOf(formData.birthMonth);
       const monthNum = (monthIndex + 1).toString().padStart(2, '0');
@@ -278,7 +313,8 @@ useEffect(() => {
       if (!didTimeout) {
         setGlobalError(err.message || 'An unexpected error occurred.');
       }
-    } finally {
+    } 
+    finally {
       setIsLoading(false);
       clearTimeout(timeout);
     }
